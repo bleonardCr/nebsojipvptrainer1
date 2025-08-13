@@ -35,7 +35,8 @@
         "energy": 45
       }
     ],
-    "optimalMoveset": [ "Vine Whip", "Seed Bomb" ]
+    "optimalMoveset": [ "Vine Whip", "Seed Bomb" ],
+    "leagues": [ "Great", "Ultra" ]
   },
   {
     "name": "Medicham",
@@ -73,7 +74,8 @@
         "energy": 55
       }
     ],
-    "optimalMoveset": [ "Counter", "Dynamic Punch" ]
+    "optimalMoveset": [ "Counter", "Dynamic Punch" ],
+    "leagues": [ "Great" ]
   },
   {
     "name": "Azumarill",
@@ -111,6 +113,85 @@
         "energy": 60
       }
     ],
-    "optimalMoveset": [ "Bubble", "Play Rough" ]
+    "optimalMoveset": [ "Bubble", "Play Rough" ],
+    "leagues": [ "Great", "Ultra" ]
+  },
+  {
+    "name": "Charizard",
+    "baseAttack": 223,
+    "baseDefense": 176,
+    "baseStamina": 186,
+    "types": [ "Fire", "Flying" ],
+    "fastMoves": [
+      {
+        "name": "Fire Spin",
+        "type": "Fire",
+        "damage": 9,
+        "energy": 10,
+        "turns": 3
+      }
+    ],
+    "chargedMoves": [
+      {
+        "name": "Blast Burn",
+        "type": "Fire",
+        "damage": 110,
+        "energy": 50
+      }
+    ],
+    "optimalMoveset": [ "Fire Spin", "Blast Burn" ],
+    "leagues": [ "Ultra", "Master" ]
+  },
+  {
+    "name": "Garchomp",
+    "baseAttack": 261,
+    "baseDefense": 193,
+    "baseStamina": 239,
+    "types": [ "Dragon", "Ground" ],
+    "fastMoves": [
+      {
+        "name": "Mud Shot",
+        "type": "Ground",
+        "damage": 3,
+        "energy": 9,
+        "turns": 2
+      }
+    ],
+    "chargedMoves": [
+      {
+        "name": "Earth Power",
+        "type": "Ground",
+        "damage": 90,
+        "energy": 55
+      }
+    ],
+    "optimalMoveset": [ "Mud Shot", "Earth Power" ],
+    "leagues": [ "Master" ]
+  },
+  {
+    "name": "Vigoroth",
+    "baseAttack": 159,
+    "baseDefense": 145,
+    "baseStamina": 190,
+    "types": [ "Normal" ],
+    "fastMoves": [
+      {
+        "name": "Counter",
+        "type": "Fighting",
+        "damage": 8,
+        "energy": 7,
+        "turns": 2
+      }
+    ],
+    "chargedMoves": [
+      {
+        "name": "Body Slam",
+        "type": "Normal",
+        "damage": 60,
+        "energy": 35
+      }
+    ],
+    "optimalMoveset": [ "Counter", "Body Slam" ],
+    "leagues": [ "Great" ]
   }
 ]

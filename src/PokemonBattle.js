@@ -5,14 +5,22 @@ const typeEffectiveness = {
     Psychic: { strong: ['Fighting', 'Poison'], weak: ['Steel', 'Psychic', 'Dark'] },
     Water: { strong: ['Fire', 'Ground', 'Rock'], weak: ['Water', 'Grass', 'Dragon'] },
     Fairy: { strong: ['Fighting', 'Dragon', 'Dark'], weak: ['Poison', 'Steel', 'Fire'] },
-    Normal: { strong: [], weak: ['Rock', 'Steel'] }
+    Normal: { strong: [], weak: ['Rock', 'Steel'] },
+    Fire: { strong: ['Grass', 'Ice', 'Bug', 'Steel'], weak: ['Fire', 'Water', 'Rock', 'Dragon'] },
+    Flying: { strong: ['Grass', 'Fighting', 'Bug'], weak: ['Electric', 'Rock', 'Steel'] },
+    Dragon: { strong: ['Dragon'], weak: ['Steel'] },
+    Ground: { strong: ['Fire', 'Electric', 'Poison', 'Rock', 'Steel'], weak: ['Grass', 'Bug'] }
 };
 
 const cpMultipliers = {
     15: 0.694,
     20: 0.7317,
     25: 0.7615,
-    30: 0.7893
+    30: 0.7893,
+    35: 0.8146,
+    40: 0.838,
+    45: 0.8603,
+    50: 0.8815
 };
 
 const PokemonBattle = {

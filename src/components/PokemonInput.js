@@ -2,20 +2,14 @@ import React, { useState } from 'react';
 
 function PokemonInput({ title, team, pokemonData, onAddPokemon }) {
     const [name, setName] = useState('');
-    const [attackIV, setAttackIV] = useState(0);
-    const [defenseIV, setDefenseIV] = useState(0);
-    const [staminaIV, setStaminaIV] = useState(0);
-    const [level, setLevel] = useState(15);
+    the[level, setLevel] = useState(15);
 
     const handleAdd = () => {
         if (team.length >= 3) return;
         const pokemon = pokemonData.find((p) => p.name.toLowerCase() === name.toLowerCase());
         if (pokemon) {
-            onAddPokemon(pokemon, { attack: attackIV, defense: defenseIV, stamina: staminaIV }, level);
+            onAddPokemon(pokemon, level);
             setName('');
-            setAttackIV(0);
-            setDefenseIV(0);
-            setStaminaIV(0);
             setLevel(15);
         }
     };
@@ -23,43 +17,18 @@ function PokemonInput({ title, team, pokemonData, onAddPokemon }) {
     return (
         <div>
             <h2>{title}</h2>
-            <input
-                type="text"
-                placeholder="Pokémon Name"
+            <select
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-            />
+            >
+                <option value="">Select Pokémon</option>
+                {pokemonData.map((pokemon) => (
+                    <option key={pokemon.name} value={pokemon.name}>
+                        {pokemon.name}
+                    </option>
+                ))}
+            </select>
             <div>
-                <label>
-                    Attack IV:
-                    <input
-                        type="number"
-                        min="0"
-                        max="15"
-                        value={attackIV}
-                        onChange={(e) => setAttackIV(parseInt(e.target.value) || 0)}
-                    />
-                </label>
-                <label>
-                    Defense IV:
-                    <input
-                        type="number"
-                        min="0"
-                        max="15"
-                        value={defenseIV}
-                        onChange={(e) => setDefenseIV(parseInt(e.target.value) || 0)}
-                    />
-                </label>
-                <label>
-                    Stamina IV:
-                    <input
-                        type="number"
-                        min="0"
-                        max="15"
-                        value={staminaIV}
-                        onChange={(e) => setStaminaIV(parseInt(e.target.value) || 0)}
-                    />
-                </label>
                 <label>
                     Level:
                     <select value={level} onChange={(e) => setLevel(parseInt(e.target.value))}>
@@ -67,6 +36,10 @@ function PokemonInput({ title, team, pokemonData, onAddPokemon }) {
                         <option value={20}>20</option>
                         <option value={25}>25</option>
                         <option value={30}>30</option>
+                        <option value={35}>35</option>
+                        <option value={40}>40</option>
+                        <option value={45}>45</option>
+                        <option value={50}>50</option>
                     </select>
                 </label>
             </div>

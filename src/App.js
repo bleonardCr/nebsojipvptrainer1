@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PokemonInput from './components/PokemonInput';
 import TeamDisplay from './components/TeamDisplay';
 import MatchupResults from './components/MatchupResults';
@@ -11,15 +11,33 @@ function App() {
     const [shields, setShields] = useState({ you: 2, opponent: 2 });
     const [results, setResults] = useState(null);
     const [pokemonData, setPokemonData] = useState([]);
+    const [selectedLeague, setSelectedLeague] = useState('Great');
+    const [filteredPokemon, setFilteredPokemon] = useState([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetch('/pokemon_data.json')
             .then((response) => response.json())
-            .then((data) => setPokemonData(data))
+            .then((data) => {
+                setPokemonData(data);
+                setFilteredPokemon(data.filter(p => p.leagues.includes(selectedLeague)));
+            })
             .catch((error) => console.error('Error loading Pokémon data:', error));
-    }, []);
+    }, [selectedLeague]);
 
-    const handleAddPokemon = (team, pokemon, ivs, level) => {
+    const leagueCPcaps = {
+        Great: 1500,
+        Ultra: 2500,
+        Master: 10000
+    };
+
+    const optimalIVs = {
+        Great: { attack: 0, defense: 15, stamina: 15 },
+        Ultra: { attack: 15, defense: 15, stamina: 15 },
+        Master: { attack: 15, defense: 15, stamina: 15 }
+    };
+
+    const handleAddPokemon = (team, pokemon, level) => {
+        const ivs = optimalIVs[selectedLeague];
         const updatedTeam = [...team, { ...pokemon, ivs, level }];
         if (team === yourTeam) {
             setYourTeam(updatedTeam.slice(0, 3));
@@ -36,18 +54,26 @@ function App() {
     return (
         <div className="app">
             <h1>Nebsoji PvP Trainer</h1>
+            <label>
+                Select League:
+                <select value={selectedLeague} onChange={(e) => setSelectedLeague(e.target.value)}>
+                    <option value="Great">Great League</option>
+                    <option value="Ultra">Ultra League</option>
+                    <option value="Master">Master League</option>
+                </select>
+            </label>
             <div className="team-inputs">
                 <PokemonInput
                     title="Your Team"
                     team={yourTeam}
-                    pokemonData={pokemonData}
-                    onAddPokemon={(pokemon, ivs, level) => handleAddPokemon(yourTeam, pokemon, ivs, level)}
+                    pokemonData={filteredPokemon}
+                    onAddPokemon={(pokemon, level) => handleAddPokemon(yourTeam, pokemon, level)}
                 />
                 <PokemonInput
                     title="Opponent Team"
                     team={opponentTeam}
-                    pokemonData={pokemonData}
-                    onAddPokemon={(pokemon, ivs, level) => handleAddPokemon(opponentTeam, pokemon, ivs, level)}
+                    pokemonData={filteredPokemon}
+                    onAddPokemon={(pokemon, level) => handleAddPokemon(opponentTeam, pokemon, level)}
                 />
             </div>
             <div>
