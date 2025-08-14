@@ -1,15 +1,19 @@
 ﻿// src/battleCalc.js
-// Turn-accurate PvP lite sim with shields, CMP, STAB, types, and robust GM parsing.
+// Adapter your App uses. Calls the battle engine and also exposes helpers:
+// - buildMoveBook (bootstrap from gamemaster)
+// - bestOfThree (UI helper)
+// - recommendMovesFor(speciesId, leagueEntry?) → {fastMove, chargedMoves}
+// - dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds[]) → top 2 charged move IDs
 
-let SPECIES = {};  // speciesId -> { atk, def, sta, types: [...] }
-let MOVES = {};  // MOVE_ID   -> { id, kind:"fast"|"charged", type, power, energyGain, energyCost, turns }
+import { simulateBattle } from "./engine/battleEngine";
 
-// ---------------- Utilities ----------------
+let SPECIES = {};
+let MOVES = {};
+
+// ---------------- small utils kept for compatibility ----------------
 const num = (v, d = 0) => (Number.isFinite(Number(v)) ? Number(v) : d);
-
-function canonMoveId(s) {
-    if (!s) return "";
-    return String(s)
+const canonMoveId = (s) =>
+    String(s || "")
         .trim()
         .replace(/^COMBAT_V\d+_MOVE_/i, "")
         .replace(/^V\d+_/i, "")
@@ -17,21 +21,21 @@ function canonMoveId(s) {
         .replace(/_+/g, "_")
         .replace(/^_|_$/g, "")
         .toUpperCase();
-}
-function normId(s) { return String(s || '').toLowerCase().replace(/[^\w]+/g, '_').replace(/^_+|_+$/g, ''); }
+const normId = (s) =>
+    String(s || "")
+        .toLowerCase()
+        .replace(/[^\w]+/g, "_")
+        .replace(/^_+|_+$/g, "");
 function capLeague(league) {
     const map = { "Great League": 1500, "Ultra League": 2500, "Master League": Infinity };
-    return typeof league === "string" ? (map[league] ?? Infinity) : (Number.isFinite(league) ? Number(league) : Infinity);
-}
-function tcase(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
-function normType(s) {
-    if (!s) return null;
-    const raw = String(s).replace(/^POKEMON_TYPE_/, '').replace(/_/g, ' ').trim().toLowerCase();
-    const T = tcase(raw);
-    return TYPES.includes(T) ? T : null;
+    return typeof league === "string"
+        ? map[league] ?? Infinity
+        : Number.isFinite(league)
+            ? Number(league)
+            : Infinity;
 }
 
-// ---------------- CP multipliers (0.5 levels to 50) ----------------
+// CPM helpers
 const CPM = [];
 (function fillCPM() {
     const table = [
@@ -47,70 +51,42 @@ const CPM = [];
         0.7731865, 0.776064962, 0.77893275, 0.781790055, 0.78463697, 0.787473578, 0.79030001, 0.792803968,
         0.79530001, 0.797803921, 0.8003
     ];
-    CPM.length = 100; CPM.fill(0);
+    CPM.length = 100;
+    CPM.fill(0);
     for (let i = 0; i < table.length; i++) CPM[i + 1] = table[i];
 })();
-function cp(a, d, s, c) { return Math.floor((a * Math.sqrt(d) * Math.sqrt(s) * c * c) / 10); }
+function cp(a, d, s, c) {
+    return Math.floor((a * Math.sqrt(d) * Math.sqrt(s) * c * c) / 10);
+}
 function levelForCap(baseAtk, baseDef, baseSta, cap) {
-    if (!isFinite(cap)) return 99; // level ~50
+    if (!isFinite(cap)) return 50;
     let best = 1;
     for (let i = 1; i < CPM.length; i++) {
-        const c = CPM[i]; if (!c) continue;
+        const c = CPM[i];
+        if (!c) continue;
         if (cp(baseAtk * c, baseDef * c, baseSta * c, 1) <= cap) best = i;
     }
     return best;
 }
 
-// ---------------- Type chart & damage ----------------
-const TYPES = [
-    "Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel",
-    "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", "Fairy"
-];
-const EFF = {};
-TYPES.forEach(a => { EFF[a] = {}; TYPES.forEach(d => EFF[a][d] = 1); });
-function S(atk, arr, m) { arr.forEach(d => EFF[atk][d] = m); }
-S("Fighting", ["Normal", "Rock", "Ice", "Dark", "Steel"], 1.6); S("Fighting", ["Flying", "Poison", "Bug", "Psychic", "Fairy"], 0.625);
-S("Flying", ["Fighting", "Bug", "Grass"], 1.6); S("Flying", ["Rock", "Steel", "Electric"], 0.625);
-S("Poison", ["Grass", "Fairy"], 1.6); S("Poison", ["Poison", "Ground", "Rock", "Ghost"], 0.625); S("Poison", ["Steel"], 0.390625);
-S("Ground", ["Poison", "Rock", "Steel", "Fire", "Electric"], 1.6); S("Ground", ["Bug", "Grass"], 0.625); S("Ground", ["Flying"], 0.390625);
-S("Rock", ["Flying", "Bug", "Fire", "Ice"], 1.6); S("Rock", ["Fighting", "Ground", "Steel"], 0.625);
-S("Bug", ["Grass", "Psychic", "Dark"], 1.6); S("Bug", ["Fighting", "Flying", "Poison", "Ghost", "Steel", "Fire", "Fairy"], 0.625);
-S("Ghost", ["Ghost", "Psychic"], 1.6); S("Ghost", ["Dark"], 0.625);
-S("Steel", ["Rock", "Ice", "Fairy"], 1.6); S("Steel", ["Steel", "Fire", "Water", "Electric"], 0.625);
-S("Fire", ["Bug", "Steel", "Grass", "Ice"], 1.6); S("Fire", ["Rock", "Fire", "Water", "Dragon"], 0.625);
-S("Water", ["Ground", "Rock", "Fire"], 1.6); S("Water", ["Water", "Grass", "Dragon"], 0.625);
-S("Grass", ["Ground", "Rock", "Water"], 1.6); S("Grass", ["Flying", "Poison", "Bug", "Steel", "Fire", "Grass", "Dragon"], 0.625);
-S("Electric", ["Flying", "Water"], 1.6); S("Electric", ["Grass", "Electric", "Dragon"], 0.625); S("Electric", ["Ground"], 0.390625);
-S("Psychic", ["Fighting", "Poison"], 1.6); S("Psychic", ["Psychic", "Steel"], 0.625); S("Psychic", ["Dark"], 0.390625);
-S("Ice", ["Flying", "Ground", "Grass", "Dragon"], 1.6); S("Ice", ["Steel", "Fire", "Water", "Ice"], 0.625);
-S("Dragon", ["Dragon"], 1.6); S("Dragon", ["Steel"], 0.625); S("Dragon", ["Fairy"], 0.390625);
-S("Dark", ["Ghost", "Psychic"], 1.6); S("Dark", ["Fighting", "Dark", "Fairy"], 0.625);
-S("Fairy", ["Fighting", "Dragon", "Dark"], 1.6); S("Fairy", ["Poison", "Steel", "Fire"], 0.625);
-
-const STAB = 1.2;
-function eff(multType, defendTypes) { let m = 1; for (const t of defendTypes) { m *= (EFF[multType]?.[t] ?? 1); } return m; }
-function dmg(power, atk, def, stab, effm) {
-    const raw = 0.5 * num(power, 0) * (num(atk, 1) / Math.max(1, num(def, 1))) * (stab || 1) * (effm || 1);
-    return Math.max(1, Math.floor(raw) + 1); // PvP rounding (+1)
-}
-
-// ---------------- Books ----------------
+// ---------------- build species & moves from gamemaster ----------------
 function buildSpeciesBook(gm) {
-    const lists = [
-        gm?.pokemon, gm?.data?.pokemon, gm?.species, gm?.pokemonList, gm?.pokemonSettings
-    ].filter(Boolean);
+    const lists = [gm?.pokemon, gm?.data?.pokemon].filter(Boolean);
     const out = {};
     for (const L of lists) {
         for (const p of L) {
-            const id = normId(p.speciesId || p.pokemonId || p.templateId || p.id || p.name);
-            if (!id) continue;
+            const id = normId(p.speciesId || p.id || p.name);
             const bs = p.baseStats || p.stats || {};
-            const atk = num(p.baseAttack ?? bs.atk ?? bs.attack ?? p.attack, 200);
-            const def = num(p.baseDefense ?? bs.def ?? bs.defense ?? p.defense, 200);
-            const sta = num(p.baseStamina ?? bs.sta ?? bs.stamina ?? p.stamina, 200);
             const typesArr = p.types || [p.type1, p.type2].filter(Boolean);
-            const types = (typesArr || []).map(normType).filter(Boolean);
-            out[id] = { atk, def, sta, types: types.length ? types : ["Normal"] };
+            const types = (typesArr || [])
+                .map((t) => String(t).replace(/^POKEMON_TYPE_/, "").toLowerCase())
+                .filter(Boolean);
+            out[id] = {
+                atk: num(bs.atk ?? bs.attack, 200),
+                def: num(bs.def ?? bs.defense, 200),
+                sta: num(bs.hp ?? bs.sta ?? bs.stamina, 200),
+                types: types.length ? types : ["normal"],
+            };
         }
     }
     return out;
@@ -118,208 +94,174 @@ function buildSpeciesBook(gm) {
 
 export function buildMoveBook(gm) {
     SPECIES = buildSpeciesBook(gm);
-    const pools = [gm?.moves, gm?.combatMoves, gm?.data?.moves, gm?.data?.combatMoves, gm?.moveList].filter(Boolean);
+    const pools = [
+        gm?.moves,
+        gm?.data?.moves,
+        gm?.combatMoves,
+        gm?.data?.combatMoves,
+    ].filter(Boolean);
     const out = {};
-
     for (const list of pools) {
         for (const m of list) {
-            const rawId = m.moveId ?? m.id ?? m.uniqueId ?? m.templateId ?? m.name ?? "";
-            const id = canonMoveId(rawId);
+            const id = canonMoveId(m.moveId ?? m.id ?? m.uniqueId ?? m.templateId ?? m.name);
             if (!id) continue;
-
-            const type = normType(m.type || m.pokemonType || m.moveType) || "Normal";
+            const type = String(m.type || m.pokemonType || m.moveType || "Normal")
+                .replace(/^POKEMON_TYPE_/, "")
+                .toLowerCase();
             const power = num(m.pvpPower ?? m.power ?? m.combatPower ?? m.damage, 3);
-
-            let kind = "fast", energyGain = 0, energyCost = 0, turns = 1;
-            if (m.energyDelta != null) { const ed = num(m.energyDelta, 0); if (ed > 0) { kind = "fast"; energyGain = ed; } if (ed < 0) { kind = "charged"; energyCost = Math.abs(ed); } }
-            if (m.energyGain != null) { kind = "fast"; energyGain = num(m.energyGain, 0); }
-            if (m.energy != null) { kind = "charged"; energyCost = Math.abs(num(m.energy, 0)); }
+            let kind = "fast",
+                energyGain = 0,
+                energyCost = 0,
+                turns = 1;
+            if (m.energyDelta != null) {
+                const ed = num(m.energyDelta, 0);
+                if (ed > 0) {
+                    kind = "fast";
+                    energyGain = ed;
+                }
+                if (ed < 0) {
+                    kind = "charged";
+                    energyCost = Math.abs(ed);
+                }
+            }
+            if (m.energyGain != null) {
+                kind = "fast";
+                energyGain = num(m.energyGain, 0);
+            }
+            if (m.energy != null) {
+                kind = "charged";
+                energyCost = Math.abs(num(m.energy, 0));
+            }
             turns = num(m.durationTurns ?? m.turns ?? m.cooldownTurns, kind === "fast" ? 1 : 0);
             if (kind === "fast") turns = Math.max(1, Math.floor(turns) || 1);
-
-            if (kind === "fast" && energyGain <= 0) { console.warn(`[PvP] fast ${id} missing energyGain; using 8.`); energyGain = 8; }
-            if (kind === "charged" && energyCost <= 0) { console.warn(`[PvP] charged ${id} missing energy; using 45.`); energyCost = 45; }
-
-            const mv = { id, kind, type, power, energyGain, energyCost, turns };
-            if (!out[id] || power > out[id].power) out[id] = mv;
+            out[id] = { id, kind, type, power, energyGain, energyCost, turns };
         }
     }
-
-    // safe fallback fast move
-    out.TACKLE = out.TACKLE || { id: "TACKLE", kind: "fast", type: "Normal", power: 3, energyGain: 8, energyCost: 0, turns: 1 };
-
+    out.TACKLE ||= {
+        id: "TACKLE",
+        kind: "fast",
+        type: "normal",
+        power: 3,
+        energyGain: 8,
+        energyCost: 0,
+        turns: 1,
+    };
     MOVES = out;
     return out;
 }
 
-// ---------------- Build fighters at league cap ----------------
-function buildFighter(src, leagueName) {
+// ---------------- move ranking helpers (danger moves) ----------------
+const STAB = 1.2;
+const TYPES = [
+    "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel",
+    "fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy"
+];
+const EFF = {}; TYPES.forEach(a => { EFF[a] = {}; TYPES.forEach(d => EFF[a][d] = 1); });
+function S(a, arr, m) { arr.forEach(d => EFF[a][d] = m); }
+S("fighting", ["normal", "rock", "ice", "dark", "steel"], 1.6); S("fighting", ["flying", "poison", "bug", "psychic", "fairy"], 0.625);
+S("flying", ["fighting", "bug", "grass"], 1.6); S("flying", ["rock", "steel", "electric"], 0.625);
+S("poison", ["grass", "fairy"], 1.6); S("poison", ["poison", "ground", "rock", "ghost"], 0.625); S("poison", ["steel"], 0.390625);
+S("ground", ["poison", "rock", "steel", "fire", "electric"], 1.6); S("ground", ["bug", "grass"], 0.625); S("ground", ["flying"], 0.390625);
+S("rock", ["flying", "bug", "fire", "ice"], 1.6); S("rock", ["fighting", "ground", "steel"], 0.625);
+S("bug", ["grass", "psychic", "dark"], 1.6); S("bug", ["fighting", "flying", "poison", "ghost", "steel", "fire", "fairy"], 0.625);
+S("ghost", ["ghost", "psychic"], 1.6); S("ghost", ["dark"], 0.625);
+S("steel", ["rock", "ice", "fairy"], 1.6); S("steel", ["steel", "fire", "water", "electric"], 0.625);
+S("fire", ["bug", "steel", "grass", "ice"], 1.6); S("fire", ["rock", "fire", "water", "dragon"], 0.625);
+S("water", ["ground", "rock", "fire"], 1.6); S("water", ["water", "grass", "dragon"], 0.625);
+S("grass", ["ground", "rock", "water"], 1.6); S("grass", ["flying", "poison", "bug", "steel", "fire", "grass", "dragon"], 0.625);
+S("electric", ["flying", "water"], 1.6); S("electric", ["grass", "electric", "dragon"], 0.625); S("electric", ["ground"], 0.390625);
+S("psychic", ["fighting", "poison"], 1.6); S("psychic", ["psychic", "steel"], 0.625); S("psychic", ["dark"], 0.390625);
+S("ice", ["flying", "ground", "grass", "dragon"], 1.6); S("ice", ["steel", "fire", "water", "ice"], 0.625);
+S("dragon", ["dragon"], 1.6); S("dragon", ["steel"], 0.625); S("dragon", ["fairy"], 0.390625);
+S("dark", ["ghost", "psychic"], 1.6); S("dark", ["fighting", "dark", "fairy"], 0.625);
+S("fairy", ["fighting", "dragon", "dark"], 1.6); S("fairy", ["poison", "steel", "fire"], 0.625);
+
+const eff = (type, defs) => (defs || []).reduce((m, t) => m * (EFF[type]?.[t] ?? 1), 1);
+const dmg = (power, atk, def, stab, mult) => Math.max(1, Math.floor(0.5 * num(power, 0) * (num(atk, 1) / Math.max(1, num(def, 1))) * (stab || 1) * (mult || 1)) + 1);
+
+// ---------------- “best moves for my team” overrides ----------------
+const USER_MOVE_OVERRIDES = {
+    // You asked for this explicitly:
+    "dialga_origin": { fastMove: "DRAGON_BREATH", chargedMoves: ["ROAR_OF_TIME", "IRON_HEAD"] },
+    "dialga": { fastMove: "DRAGON_BREATH", chargedMoves: ["ROAR_OF_TIME", "IRON_HEAD"] }
+};
+
+// Recommend moves for a species. If leagueEntry already has moves, keep them.
+// Otherwise, use override if present; else leave undefined.
+export function recommendMovesFor(speciesId, leagueEntry) {
+    const sid = normId(speciesId);
+    // league file wins if it has moves
+    if (leagueEntry?.fastMove || (leagueEntry?.chargedMoves?.length))
+        return {
+            fastMove: leagueEntry.fastMove,
+            chargedMoves: leagueEntry.chargedMoves
+        };
+    if (USER_MOVE_OVERRIDES[sid]) return USER_MOVE_OVERRIDES[sid];
+    // Fallback → leave undefined; engine will still run (uses safe defaults)
+    return { fastMove: leagueEntry?.fastMove, chargedMoves: leagueEntry?.chargedMoves || [] };
+}
+
+// Rank enemy charged vs my types; return top 2 IDs
+export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []) {
+    const e = SPECIES[normId(enemySpeciesId)];
+    const me = SPECIES[normId(mySpeciesId)];
+    if (!e || !me || !enemyChargedIds?.length) return [];
+
+    const atk = e.atk, def = me.def, myTypes = me.types || ["normal"];
+    const scored = enemyChargedIds
+        .map((mid) => String(mid || "").toUpperCase())
+        .map((id) => MOVES[id])
+        .filter(Boolean)
+        .map((m) => {
+            const stab = (e.types || []).includes(m.type) ? STAB : 1;
+            const mult = eff(m.type, myTypes);
+            return { id: m.id, score: dmg(m.power, atk, def, stab, mult) };
+        })
+        .sort((a, b) => b.score - a.score);
+
+    return scored.slice(0, 2).map(x => x.id);
+}
+
+// ---------------- adapter → engine ----------------
+function toEngineSide(src, leagueName, shields) {
     const cap = capLeague(leagueName);
-    const sid = normId(src.speciesId || src.name);
-    const base = SPECIES[sid] || { atk: 200, def: 200, sta: 200, types: ["Normal"] };
-
-    const lvl = levelForCap(base.atk, base.def, base.sta, cap);
-    const cpm = CPM[lvl] || CPM[99];
-
-    const Atk = base.atk * cpm;
-    const Def = base.def * cpm;
-    const HP = Math.max(1, Math.floor(base.sta * cpm));
-
-    const fast = MOVES[canonMoveId(src.fastMove)] || MOVES.TACKLE;
-    const chargedMoves = (src.chargedMoves || [])
-        .map(canonMoveId)
-        .map(id => MOVES[id])
-        .filter(Boolean);
-
+    const sid = src?.speciesId || src?.name || "";
+    const base = SPECIES[normId(sid)] || { atk: 200, def: 200, sta: 200, types: ["normal"] };
+    const level = levelForCap(base.atk, base.def, base.sta, cap);
     return {
-        name: src.name || src.speciesId,
         speciesId: sid,
-        types: base.types,
-        Atk, Def, MaxHP: HP, HP,
-        fast, chargedMoves,
-        energy: 0,
-        cooldown: 0 // turns until next fast connects
+        name: src?.name || src?.speciesId || sid,
+        fastMove: src?.fastMove,
+        chargedMoves: src?.chargedMoves || [],
+        shields: Math.max(0, shields | 0),
+        level,
+        base
     };
 }
 
-// pick charged with highest *actual* damage vs current foe
-function bestCharged(att, def) {
-    let best = null, bestVal = -Infinity;
-    for (const m of (att.chargedMoves || [])) {
-        if (!m || m.kind !== "charged") continue;
-        const stab = att.types.includes(m.type) ? STAB : 1;
-        const mult = eff(m.type, def.types);
-        const val = dmg(m.power, att.Atk, def.Def, stab, mult);
-        if (val > bestVal) { bestVal = val; best = m; }
-    }
-    return best;
-}
-
-// ---------------- Simulate one duel ----------------
-export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2, _book = MOVES, leagueName = "Master League") {
-    const A = buildFighter(attackerIn, leagueName);
-    const B = buildFighter(defenderIn, leagueName);
-
-    const recA = bestCharged(A, B)?.id || null;
-    const recB = bestCharged(B, A)?.id || null;
-
-    let aSh = Math.max(0, shieldsA | 0), bSh = Math.max(0, shieldsB | 0);
-    let t = 0; const MAX_TURNS = 2000; const log = [];
-
-    function tryFast(user, foe) {
-        if (!user.fast) return;
-        user.cooldown--;
-        if (user.cooldown <= 0) {
-            // apply fast damage & energy when the move "lands"
-            const stab = user.types.includes(user.fast.type) ? STAB : 1;
-            const mult = eff(user.fast.type, foe.types);
-            const hit = dmg(user.fast.power, user.Atk, foe.Def, stab, mult);
-            foe.HP = Math.max(0, foe.HP - hit);
-            user.energy = Math.min(100, user.energy + num(user.fast.energyGain, 0));
-            user.cooldown = user.fast.turns; // reset cooldown
-        }
-    }
-
-    function canThrow(u) { return (u.chargedMoves || []).some(m => u.energy >= (m.energyCost || 45)); }
-    function chooseThrow(u, foe) {
-        // choose move with max actual damage that is ready
-        let pick = null, best = -Infinity;
-        for (const m of (u.chargedMoves || [])) {
-            if (u.energy < (m.energyCost || 45)) continue;
-            const stab = u.types.includes(m.type) ? STAB : 1;
-            const mult = eff(m.type, foe.types);
-            const val = dmg(m.power, u.Atk, foe.Def, stab, mult);
-            if (val > best) { best = val; pick = m; }
-        }
-        return pick;
-    }
-    function shouldShield(foe, incoming, shieldsLeft) {
-        if (shieldsLeft <= 0) return false;
-        const stab = foe.types.includes(incoming.type) ? STAB : 1;
-        const mult = eff(incoming.type, foe.types);
-        const hit = dmg(incoming.power, (/*att not used*/1) * foe.Atk || foe.Atk, foe.Def, stab, mult); // not exact, still OK
-        // KO or big chunk thresholds (tuned by remaining shields)
-        const th = shieldsLeft === 2 ? 0.32 : 0.45; // with 2 shields be more liberal, with 1 shield be stricter
-        return hit >= foe.HP || hit >= foe.MaxHP * th;
-    }
-
-    // initialize fast cooldowns so first fast lands at its "turns"
-    A.cooldown = A.fast?.turns || 1;
-    B.cooldown = B.fast?.turns || 1;
-
-    while (A.HP > 0 && B.HP > 0 && t < MAX_TURNS) {
-        t++;
-
-        // if both have a charged ready at the start of a turn, CMP decides order
-        const aReady = canThrow(A);
-        const bReady = canThrow(B);
-
-        if (aReady || bReady) {
-            const aFirst = aReady && (!bReady || (A.Atk >= B.Atk));
-
-            const resolve = (user, foe, shieldsRef, who) => {
-                const move = chooseThrow(user, foe);
-                if (!move) return; // shouldn't happen, but safe
-                let shielded = false;
-                if (shouldShield(foe, move, (who === "A") ? bSh : aSh)) {
-                    if (who === "A") bSh--; else aSh--;
-                    shielded = true;
-                } else {
-                    const stab = user.types.includes(move.type) ? STAB : 1;
-                    const mult = eff(move.type, foe.types);
-                    const hit = dmg(move.power, user.Atk, foe.Def, stab, mult);
-                    foe.HP = Math.max(0, foe.HP - hit);
-                }
-                user.energy -= (move.energyCost || 45);
-                user.cooldown = user.fast?.turns || 1; // using a charged consumes the turn; fast window resets
-                log.push(`${who} throws ${move.id}${shielded ? " (shielded)" : ""}`);
-            };
-
-            if (aFirst) {
-                resolve(A, B, () => bSh, "A");
-                if (B.HP <= 0) break;
-                if (bReady) resolve(B, A, () => aSh, "B");
-                if (A.HP <= 0) break;
-            } else {
-                resolve(B, A, () => aSh, "B");
-                if (A.HP <= 0) break;
-                if (aReady) resolve(A, B, () => bSh, "A");
-                if (B.HP <= 0) break;
-            }
-
-            // no fast damage on a turn you throw a charged (already handled via cooldown reset)
-            continue;
-        }
-
-        // otherwise, apply fast progression this turn
-        tryFast(A, B);
-        if (B.HP <= 0) break;
-        tryFast(B, A);
-        if (A.HP <= 0) break;
-    }
-
-    const winner =
-        A.HP <= 0 && B.HP <= 0 ? "Draw" :
-            A.HP <= 0 ? B.name :
-                B.HP <= 0 ? A.name :
-                    (A.HP === B.HP ? "Draw" : (A.HP > B.HP ? A.name : B.name));
+export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2, _bookIgnored, leagueName = "Master League") {
+    const p1 = toEngineSide(attackerIn, leagueName, shieldsA);
+    const p2 = toEngineSide(defenderIn, leagueName, shieldsB);
+    const r = simulateBattle(p1, p2, MOVES);
 
     return {
-        winner,
-        aHP: Math.round((A.HP / A.MaxHP) * 100),
-        bHP: Math.round((B.HP / B.MaxHP) * 100),
-        aRecommended: recA,
-        bRecommended: recB,
-        summary: log.slice(0, 12)
+        winner:
+            r.result === "draw" ? "Draw" :
+                r.result === "p1" ? (attackerIn.name || attackerIn.speciesId) :
+                    r.result === "p2" ? (defenderIn.name || defenderIn.speciesId) : "Draw",
+        aHP: r.p1.hp,
+        bHP: r.p2.hp,
+        aRecommended: r.p1Best || (attackerIn.chargedMoves && attackerIn.chargedMoves[0]) || null,
+        bRecommended: r.p2Best || (defenderIn.chargedMoves && defenderIn.chargedMoves[0]) || null,
+        summary: []
     };
 }
 
-// ---------------- Best-of-three wrapper (UI expects this) ----------------
-export function bestOfThree(mine, enemy, myShields, foeShields, _book = MOVES, leagueName = "Master League") {
+export function bestOfThree(mine, enemy, myShields, foeShields, _bookIgnored, leagueName = "Master League") {
     const fights = mine.map(m => {
         const you = { ...m, name: m.name || m.speciesId };
         const foe = { ...enemy, name: enemy.name || enemy.speciesId };
-        const r = simulateDuel(you, foe, myShields, foeShields, MOVES, leagueName);
+        const r = simulateDuel(you, foe, myShields, foeShields, null, leagueName);
         const score = r.winner === you.name ? 1 : (r.winner === "Draw" ? 0 : -1);
         return { you: you.name, vs: foe.name, ...r, score };
     });

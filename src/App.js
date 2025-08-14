@@ -4,7 +4,12 @@ import PokemonSelect from "./components/PokemonSelect";
 import { dedupeBySpecies, toOptions, humanize, indexById } from "./lib/pokeList";
 import { LEAGUE_NAMES, importLeague } from "./Data/leagueFiles";
 import gm from "./Data/gamemaster.json";
-import { buildMoveBook, bestOfThree } from "./battleCalc";
+import {
+    buildMoveBook,
+    bestOfThree,
+    recommendMovesFor,
+    dangerMovesFor,
+} from "./battleCalc";
 
 /* ---------------- Small UI bits ---------------- */
 function ShieldPicker({ label, value, onChange, onReset }) {
@@ -17,7 +22,7 @@ function ShieldPicker({ label, value, onChange, onReset }) {
         cursor: "pointer",
         marginRight: 8,
         minWidth: 40,
-        fontWeight: 700
+        fontWeight: 700,
     });
     const resetBtn = {
         padding: "6px 10px",
@@ -26,7 +31,7 @@ function ShieldPicker({ label, value, onChange, onReset }) {
         background: "#fff",
         color: "#111",
         cursor: "pointer",
-        marginLeft: 6
+        marginLeft: 6,
     };
     return (
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -48,47 +53,62 @@ function HpBar({ youHP, foeHP }) {
         height: 8,
         background: "#e5e7eb",
         borderRadius: 999,
-        overflow: "hidden"
+        overflow: "hidden",
     };
     const seg = (w, good) => ({
         width: `${Math.max(0, Math.min(100, w))}%`,
         height: "100%",
-        background: good ? "#16a34a" : "#dc2626"
+        background: good ? "#16a34a" : "#dc2626",
     });
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 6 }}>
+        <div
+            style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+                marginTop: 6,
+            }}
+        >
             <div>
                 <div style={{ fontSize: 12, color: "#6b7280" }}>You: {youHP}%</div>
-                <div style={wrap}><div style={seg(youHP, true)} /></div>
+                <div style={wrap}>
+                    <div style={seg(youHP, true)} />
+                </div>
             </div>
             <div>
                 <div style={{ fontSize: 12, color: "#6b7280" }}>Foe: {foeHP}%</div>
-                <div style={wrap}><div style={seg(foeHP, false)} /></div>
+                <div style={wrap}>
+                    <div style={seg(foeHP, false)} />
+                </div>
             </div>
         </div>
     );
 }
 
 function KillToggle({ dead, onToggle }) {
-    const common = {
+    const base = {
         border: "1px solid #aaa",
-        borderRadius: 8,
-        padding: "2px 8px",
+        borderRadius: 999,
+        padding: "4px 10px",
         cursor: "pointer",
         fontSize: 12,
-        marginLeft: 8
+        marginLeft: 8,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        userSelect: "none",
     };
     return (
         <button
-            title={dead ? "Mark alive" : "Mark dead"}
+            title={dead ? "Mark alive (include in calc)" : "Mark dead (exclude from calc)"}
             onClick={onToggle}
             style={{
-                ...common,
+                ...base,
                 background: dead ? "#fee2e2" : "#f3f4f6",
-                color: dead ? "#991b1b" : "#111"
+                color: dead ? "#991b1b" : "#111",
             }}
         >
-            {dead ? "☠️ X" : "✖️"}
+            {dead ? "☠️ Dead" : "✖️ Exclude"}
         </button>
     );
 }
@@ -97,7 +117,11 @@ function KillToggle({ dead, onToggle }) {
 export default function App() {
     // build move/species book once from gamemaster
     useEffect(() => {
-        try { buildMoveBook(gm); } catch (e) { console.error(e); }
+        try {
+            buildMoveBook(gm);
+        } catch (e) {
+            console.error(e);
+        }
     }, []);
 
     const [league, setLeague] = useState(LEAGUE_NAMES[0]);
@@ -108,17 +132,10 @@ export default function App() {
     const [poolIndex, setPoolIndex] = useState({});
     const [loadError, setLoadError] = useState("");
 
-    // teams
-    const [me, setMe] = useState([
-        { id: "", label: "", dead: false },
-        { id: "", label: "", dead: false },
-        { id: "", label: "", dead: false }
-    ]);
-    const [op, setOp] = useState([
-        { id: "", label: "", dead: false },
-        { id: "", label: "", dead: false },
-        { id: "", label: "", dead: false }
-    ]);
+    // teams — always show 3 boxes, only 1 required
+    const empty = { id: "", label: "", dead: false };
+    const [me, setMe] = useState([{ ...empty }, { ...empty }, { ...empty }]);
+    const [op, setOp] = useState([{ ...empty }, { ...empty }, { ...empty }]);
 
     // shields
     const [myShields, setMyShields] = useState(2);
@@ -129,10 +146,14 @@ export default function App() {
 
     /* ----- helpers ----- */
     function normalizeList(modDefault) {
-        return Array.isArray(modDefault) ? modDefault
-            : Array.isArray(modDefault?.pokemon) ? modDefault.pokemon
-                : Array.isArray(modDefault?.data) ? modDefault.data
-                    : Array.isArray(modDefault?.list) ? modDefault.list
+        return Array.isArray(modDefault)
+            ? modDefault
+            : Array.isArray(modDefault?.pokemon)
+                ? modDefault.pokemon
+                : Array.isArray(modDefault?.data)
+                    ? modDefault.data
+                    : Array.isArray(modDefault?.list)
+                        ? modDefault.list
                         : [];
     }
 
@@ -159,8 +180,8 @@ export default function App() {
     useEffect(() => {
         setLoadError("");
         setResults(null);
-        setMe([{ id: "", label: "", dead: false }, { id: "", label: "", dead: false }, { id: "", label: "", dead: false }]);
-        setOp([{ id: "", label: "", dead: false }, { id: "", label: "", dead: false }, { id: "", label: "", dead: false }]);
+        setMe([{ ...empty }, { ...empty }, { ...empty }]);
+        setOp([{ ...empty }, { ...empty }, { ...empty }]);
         setMyShields(2);
         setOpShields(2);
 
@@ -177,73 +198,160 @@ export default function App() {
 
     /* ----- recompute when picks/shields change ----- */
     const ready = useMemo(() => {
+        // only 1 alive & selected required on each side
         const myAliveChosen = me.some((m) => !!m.id && !m.dead);
         const foeAliveChosen = op.some((o) => !!o.id && !o.dead);
         return myAliveChosen && foeAliveChosen;
     }, [me, op]);
 
     useEffect(() => {
-        if (!ready) { setResults(null); return; }
+        if (!ready) {
+            setResults(null);
+            return;
+        }
 
         const map = poolIndex;
-        const myTeamAlive = me.filter((m) => !m.dead && m.id).map((s) => ({ ...map[s.id], name: s.label }));
-        const enemiesAlive = op.map((s) => (s.id && !s.dead ? { ...map[s.id], name: s.label } : null)).filter(Boolean);
-        if (!myTeamAlive.length || !enemiesAlive.length) { setResults(null); return; }
+
+        // My team (ensure best moves)
+        const myTeamAlive = me
+            .filter((m) => !m.dead && m.id)
+            .map((s) => {
+                const base = { ...map[s.id], name: s.label };
+                const rec = recommendMovesFor(s.id, map[s.id]);
+                return { ...base, ...rec }; // force best moves for the user
+            });
+
+        // Enemies (use league-file moves if present)
+        const enemiesAlive = op
+            .map((s) =>
+                s.id && !s.dead ? { ...map[s.id], name: s.label } : null
+            )
+            .filter(Boolean);
+
+        if (!myTeamAlive.length || !enemiesAlive.length) {
+            setResults(null);
+            return;
+        }
 
         const perEnemy = enemiesAlive.map((enemy) => {
-            const { best, fights } = bestOfThree(myTeamAlive, enemy, myShields ?? 2, opShields ?? 2, undefined, league);
+            const { best, fights } = bestOfThree(
+                myTeamAlive,
+                enemy,
+                myShields ?? 2,
+                opShields ?? 2,
+                undefined,
+                league
+            );
             const bestFight = fights.find((f) => f.you === best.you) || fights[0];
+
+            // danger moves = top 2 enemy charged vs my best pick
+            const myBest =
+                myTeamAlive.find((x) => x.name === best.you) || myTeamAlive[0];
+            const threatMoves = dangerMovesFor(
+                enemy.speciesId,
+                myBest.speciesId,
+                enemy.chargedMoves || []
+            );
+
             return {
                 enemy: enemy.name,
                 bestPick: best.you,
                 yourRecommended: bestFight?.aRecommended || "",
-                enemyThreat: bestFight?.bRecommended || "",
-                fights
+                enemyThreats: threatMoves, // array of up to 2
+                fights,
             };
         });
 
         setResults({ perEnemy });
     }, [ready, me, op, myShields, opShields, poolIndex, league]);
 
-    /* ----- reset enemy (also resets both shields & results) ----- */
+    /* ----- resets ----- */
     function resetEnemy() {
-        setOp([{ id: "", label: "", dead: false }, { id: "", label: "", dead: false }, { id: "", label: "", dead: false }]);
+        setOp([{ ...empty }, { ...empty }, { ...empty }]);
+        setResults(null);
+        setOpShields(2);
+        // keep my shields as-is, or reset both? You asked to reset both earlier; do both:
+        setMyShields(2);
+    }
+    function resetMyTeam() {
+        setMe([{ ...empty }, { ...empty }, { ...empty }]);
         setResults(null);
         setMyShields(2);
-        setOpShields(2);
     }
 
     /* ----- styles ----- */
-    const h1 = { textAlign: "center", fontSize: 34, fontWeight: 800, margin: "28px 0" };
-    const box = { border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, marginBottom: 18, background: "#fff" };
-    const colWrap = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 12 };
+    const h1 = {
+        textAlign: "center",
+        fontSize: 34,
+        fontWeight: 800,
+        margin: "28px 0",
+    };
+    const box = {
+        border: "1px solid #e5e7eb",
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 18,
+        background: "#fff",
+    };
+    const colWrap = {
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 24,
+        marginTop: 12,
+    };
     const small = { fontSize: 13, color: "#6b7280" };
     const resultsGrid = {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
         gap: 12,
-        alignItems: "start"
+        alignItems: "start",
+    };
+    const pill = {
+        fontSize: 12,
+        background: "#f3f4f6",
+        padding: "2px 8px",
+        borderRadius: 999,
     };
 
     return (
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 16px", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
+        <div
+            style={{
+                maxWidth: 1200,
+                margin: "0 auto",
+                padding: "20px 16px",
+                fontFamily:
+                    "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+            }}
+        >
             <h1 style={h1}>Nebsoji PvP Trainer</h1>
 
             {/* League picker */}
             <div style={box}>
-                <label style={{ fontWeight: 600, marginRight: 10 }}>Select League:</label>
+                <label style={{ fontWeight: 600, marginRight: 10 }}>
+                    Select League:
+                </label>
                 <select value={league} onChange={(e) => setLeague(e.target.value)}>
                     {LEAGUE_NAMES.map((l) => (
-                        <option key={l} value={l}>{l}</option>
+                        <option key={l} value={l}>
+                            {l}
+                        </option>
                     ))}
                 </select>
-                {loadError && <div style={{ color: "#b91c1c", marginTop: 8, fontSize: 13 }}>Failed to load league data: {loadError}</div>}
+                {loadError && (
+                    <div style={{ color: "#b91c1c", marginTop: 8, fontSize: 13 }}>
+                        Failed to load league data: {loadError}
+                    </div>
+                )}
             </div>
 
             <div style={colWrap}>
-                {/* Your Team */}
+                {/* Your Team (always 3, only 1 required) */}
                 <div style={box}>
-                    <h3 style={{ margin: "0 0 12px 0" }}>Your Team (3)</h3>
+                    <h3 style={{ margin: "0 0 4px 0" }}>Your Team (3)</h3>
+                    <div style={{ ...small, marginBottom: 8 }}>
+                        Only <b>1</b> needs to be selected (and not ☠️ Dead) to run the calc.
+                    </div>
+
                     {me.map((p, i) => (
                         <div key={`me-${i}`} style={{ display: "flex", alignItems: "center" }}>
                             <div style={{ flex: 1 }}>
@@ -259,19 +367,43 @@ export default function App() {
                             <KillToggle dead={p.dead} onToggle={() => toggleDead("me", i)} />
                         </div>
                     ))}
-                    <div style={{ marginTop: 8 }}>
+
+                    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 12 }}>
                         <ShieldPicker
                             label="Your Shields:"
                             value={myShields}
                             onChange={setMyShields}
                             onReset={() => setMyShields(2)}
                         />
+                        <button
+                            onClick={resetMyTeam}
+                            style={{
+                                border: "1px solid #111",
+                                background: "#fff",
+                                borderRadius: 10,
+                                padding: "6px 10px",
+                                cursor: "pointer",
+                                height: 36,
+                            }}
+                            title="Clear your picks & results (also resets your shields)"
+                        >
+                            Reset My Team
+                        </button>
+                    </div>
+
+                    <div style={{ ...small, marginTop: 8 }}>
+                        Use <span style={pill}>☠️ Dead</span> /{" "}
+                        <span style={pill}>✖️ Exclude</span> to keep a pick visible but out of
+                        the calc.
                     </div>
                 </div>
 
-                {/* Opponents */}
+                {/* Opponents (up to 3, only 1 required) */}
                 <div style={box}>
-                    <h3 style={{ margin: "0 0 12px 0" }}>Opponents (up to 3)</h3>
+                    <h3 style={{ margin: "0 0 4px 0" }}>Opponents (up to 3)</h3>
+                    <div style={{ ...small, marginBottom: 8 }}>
+                        Only <b>1</b> needs to be selected (and not ☠️ Dead).
+                    </div>
 
                     {op.map((p, i) => (
                         <div key={`op-${i}`} style={{ display: "flex", alignItems: "center" }}>
@@ -289,7 +421,6 @@ export default function App() {
                         </div>
                     ))}
 
-                    {/* Shields row + Reset Enemy inline */}
                     <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
                         <ShieldPicker
                             label="Opponent Shields:"
@@ -305,15 +436,18 @@ export default function App() {
                                 borderRadius: 10,
                                 padding: "6px 10px",
                                 cursor: "pointer",
-                                height: 36
+                                height: 36,
                             }}
-                            title="Clear enemies & results (also resets shields)"
+                            title="Clear enemies & results (also resets both shields)"
                         >
                             Reset Enemy
                         </button>
                     </div>
 
-                    <div style={small}>Mark a pick “☠️ X” to exclude it from the calc.</div>
+                    <div style={small}>
+                        Mark a pick with <span style={pill}>☠️ Dead</span> to exclude it from
+                        the calc.
+                    </div>
                 </div>
             </div>
 
@@ -323,18 +457,36 @@ export default function App() {
                     <h3 style={{ marginTop: 0 }}>Live Results</h3>
                     <div style={resultsGrid}>
                         {results.perEnemy.map((E, i) => (
-                            <div key={i} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}>
-                                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+                            <div
+                                key={i}
+                                style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}
+                            >
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "baseline",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
                                     <div style={{ fontWeight: 800 }}>
                                         vs <b>{E.enemy}</b>
                                     </div>
-                                    <div style={{ fontSize: 12, background: "#f3f4f6", padding: "2px 8px", borderRadius: 999 }}>
-                                        Danger move: <b>{E.enemyThreat || "—"}</b>
+                                    <div
+                                        style={{
+                                            fontSize: 12,
+                                            background: "#f3f4f6",
+                                            padding: "2px 8px",
+                                            borderRadius: 999,
+                                        }}
+                                    >
+                                        Danger moves:{" "}
+                                        <b>{E.enemyThreats?.length ? E.enemyThreats.join(", ") : "—"}</b>
                                     </div>
                                 </div>
 
                                 <div style={{ fontSize: 13, color: "#374151", marginTop: 6, marginBottom: 8 }}>
-                                    Best of your 3: <b>{E.bestPick}</b> &nbsp;|&nbsp; Your charged to throw: <b>{E.yourRecommended || "—"}</b>
+                                    Best of your team: <b>{E.bestPick}</b> &nbsp;|&nbsp; Your charged to throw:{" "}
+                                    <b>{E.yourRecommended || "—"}</b>
                                 </div>
 
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
@@ -348,11 +500,20 @@ export default function App() {
                                             fontSize: 12,
                                             fontWeight: 700,
                                             color: "#fff",
-                                            background: draw ? "#6b7280" : win ? "#16a34a" : "#dc2626"
+                                            background: draw ? "#6b7280" : win ? "#16a34a" : "#dc2626",
                                         };
                                         return (
-                                            <div key={j} style={{ border: "1px solid #eef2f7", borderRadius: 10, padding: 10 }}>
-                                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                            <div
+                                                key={j}
+                                                style={{ border: "1px solid #eef2f7", borderRadius: 10, padding: 10 }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "space-between",
+                                                    }}
+                                                >
                                                     <div style={{ fontWeight: 700 }}>{o.you}</div>
                                                     <span style={badge}>{draw ? "Draw" : win ? "Win" : "Loss"}</span>
                                                 </div>
@@ -368,7 +529,8 @@ export default function App() {
                         ))}
                     </div>
                     <div style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
-                        Competitive‑lite sim (turns, energy, type, STAB, shields). We can add IVs/buffs later—UI stays the same.
+                        Competitive-lite sim (turns, energy, type, STAB, shields). IVs/buffs can
+                        be added later—UI stays the same.
                     </div>
                 </div>
             )}
