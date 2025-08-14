@@ -3,7 +3,10 @@
     "",
     "\\public",
     "\\src",
-    "\\src\\components"
+    "\\src\\components",
+    "\\src\\Data",
+    "\\src\\lib"
   ],
+  "SelectedNode": "\\public\\index.html",
   "PreviewInSolutionExplorer": false
 }

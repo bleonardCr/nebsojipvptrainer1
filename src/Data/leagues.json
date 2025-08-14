@@ -1,0 +1,5 @@
+{
+  "Great League": { "file": "/great.json" },
+  "Ultra League": { "file": "/ultra.json" },
+  "Master League": { "file": "/master.json" }
+}
