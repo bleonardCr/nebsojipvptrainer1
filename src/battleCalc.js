@@ -2,8 +2,9 @@
 // Adapter your App uses. Calls the battle engine and also exposes helpers:
 // - buildMoveBook (bootstrap from gamemaster)
 // - bestOfThree (UI helper)
-// - recommendMovesFor(speciesId, leagueEntry?) → {fastMove, chargedMoves}
-// - dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds[]) → top 2 charged move IDs
+// - recommendMovesFor(speciesId, leagueEntry?) -> {fastMove, chargedMoves}
+// - dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds[]) -> top 2 charged move IDs
+// - NEW: dangerMoveTimingFor(attacker, defender) -> {moveId, fasts, turns, seconds}
 
 import { simulateBattle } from "./engine/battleEngine";
 
@@ -69,7 +70,7 @@ function levelForCap(baseAtk, baseDef, baseSta, cap) {
     return best;
 }
 
-// ---------------- build species & moves from gamemaster ----------------
+// ---------------- build species and moves from gamemaster ----------------
 function buildSpeciesBook(gm) {
     const lists = [gm?.pokemon, gm?.data?.pokemon].filter(Boolean);
     const out = {};
@@ -150,13 +151,14 @@ export function buildMoveBook(gm) {
     return out;
 }
 
-// ---------------- move ranking helpers (danger moves) ----------------
+// ---------------- move ranking helpers ----------------
 const STAB = 1.2;
 const TYPES = [
     "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel",
     "fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy"
 ];
-const EFF = {}; TYPES.forEach(a => { EFF[a] = {}; TYPES.forEach(d => EFF[a][d] = 1); });
+const EFF = {};
+TYPES.forEach(a => { EFF[a] = {}; TYPES.forEach(d => EFF[a][d] = 1); });
 function S(a, arr, m) { arr.forEach(d => EFF[a][d] = m); }
 S("fighting", ["normal", "rock", "ice", "dark", "steel"], 1.6); S("fighting", ["flying", "poison", "bug", "psychic", "fairy"], 0.625);
 S("flying", ["fighting", "bug", "grass"], 1.6); S("flying", ["rock", "steel", "electric"], 0.625);
@@ -164,7 +166,7 @@ S("poison", ["grass", "fairy"], 1.6); S("poison", ["poison", "ground", "rock", "
 S("ground", ["poison", "rock", "steel", "fire", "electric"], 1.6); S("ground", ["bug", "grass"], 0.625); S("ground", ["flying"], 0.390625);
 S("rock", ["flying", "bug", "fire", "ice"], 1.6); S("rock", ["fighting", "ground", "steel"], 0.625);
 S("bug", ["grass", "psychic", "dark"], 1.6); S("bug", ["fighting", "flying", "poison", "ghost", "steel", "fire", "fairy"], 0.625);
-S("ghost", ["ghost", "psychic"], 1.6); S("ghost", ["dark"], 0.625);
+S("ghost", ["ghost", "psychic"], 1.6); S("ghost", ["dark"], 0.625); S("ghost", ["normal"], 0.390625);
 S("steel", ["rock", "ice", "fairy"], 1.6); S("steel", ["steel", "fire", "water", "electric"], 0.625);
 S("fire", ["bug", "steel", "grass", "ice"], 1.6); S("fire", ["rock", "fire", "water", "dragon"], 0.625);
 S("water", ["ground", "rock", "fire"], 1.6); S("water", ["water", "grass", "dragon"], 0.625);
@@ -175,29 +177,27 @@ S("ice", ["flying", "ground", "grass", "dragon"], 1.6); S("ice", ["steel", "fire
 S("dragon", ["dragon"], 1.6); S("dragon", ["steel"], 0.625); S("dragon", ["fairy"], 0.390625);
 S("dark", ["ghost", "psychic"], 1.6); S("dark", ["fighting", "dark", "fairy"], 0.625);
 S("fairy", ["fighting", "dragon", "dark"], 1.6); S("fairy", ["poison", "steel", "fire"], 0.625);
+S("normal", ["ghost"], 0.390625);
 
 const eff = (type, defs) => (defs || []).reduce((m, t) => m * (EFF[type]?.[t] ?? 1), 1);
-const dmg = (power, atk, def, stab, mult) => Math.max(1, Math.floor(0.5 * num(power, 0) * (num(atk, 1) / Math.max(1, num(def, 1))) * (stab || 1) * (mult || 1)) + 1);
+const dmg = (power, atk, def, stab, mult) =>
+    Math.max(1, Math.floor(0.5 * num(power, 0) * (num(atk, 1) / Math.max(1, num(def, 1))) * (stab || 1) * (mult || 1)) + 1);
 
-// ---------------- “best moves for my team” overrides ----------------
+// ---------------- user move overrides ----------------
 const USER_MOVE_OVERRIDES = {
-    // You asked for this explicitly:
     "dialga_origin": { fastMove: "DRAGON_BREATH", chargedMoves: ["ROAR_OF_TIME", "IRON_HEAD"] },
     "dialga": { fastMove: "DRAGON_BREATH", chargedMoves: ["ROAR_OF_TIME", "IRON_HEAD"] }
 };
 
 // Recommend moves for a species. If leagueEntry already has moves, keep them.
-// Otherwise, use override if present; else leave undefined.
 export function recommendMovesFor(speciesId, leagueEntry) {
     const sid = normId(speciesId);
-    // league file wins if it has moves
     if (leagueEntry?.fastMove || (leagueEntry?.chargedMoves?.length))
         return {
             fastMove: leagueEntry.fastMove,
             chargedMoves: leagueEntry.chargedMoves
         };
     if (USER_MOVE_OVERRIDES[sid]) return USER_MOVE_OVERRIDES[sid];
-    // Fallback → leave undefined; engine will still run (uses safe defaults)
     return { fastMove: leagueEntry?.fastMove, chargedMoves: leagueEntry?.chargedMoves || [] };
 }
 
@@ -215,14 +215,52 @@ export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []
         .map((m) => {
             const stab = (e.types || []).includes(m.type) ? STAB : 1;
             const mult = eff(m.type, myTypes);
-            return { id: m.id, score: dmg(m.power, atk, def, stab, mult) };
+            const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50)); // cheap moves favored
+            return { id: m.id, score: dmg(m.power, atk, def, stab, mult) * reach };
         })
         .sort((a, b) => b.score - a.score);
 
     return scored.slice(0, 2).map(x => x.id);
 }
 
-// ---------------- adapter → engine ----------------
+// ---- NEW helpers: pick most dangerous charged move and timing to reach it ----
+function bestChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
+    const atkSp = SPECIES[normId(attackerSid)];
+    const defSp = SPECIES[normId(defenderSid)];
+    if (!atkSp || !defSp || !chargedIds.length) return null;
+
+    const atk = atkSp.atk, def = defSp.def, dTypes = defSp.types || ["normal"];
+    let best = null;
+    for (const id of chargedIds) {
+        const m = MOVES[String(id || "").toUpperCase()];
+        if (!m) continue;
+        const stab = (atkSp.types || []).includes(m.type) ? STAB : 1;
+        const mult = eff(m.type, dTypes);
+        const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50));
+        const score = dmg(m.power, atk, def, stab, mult) * reach;
+        if (!best || score > best.score) best = { id: m.id, score, energyCost: m.energyCost };
+    }
+    return best;
+}
+
+function turnsToMove(fastMoveId, chargedEnergyCost) {
+    const f = MOVES[String(fastMoveId || "TACKLE").toUpperCase()] || MOVES.TACKLE;
+    const gain = Math.max(1, f.energyGain || 0); // guard
+    const fasts = Math.ceil(Math.max(0, chargedEnergyCost || 0) / gain);
+    const turns = fasts * Math.max(1, f.turns || 1);
+    const seconds = turns * 0.5; // 1 turn = 0.5s in GO PvP
+    return { fasts, turns, seconds, fastMoveId: f.id };
+}
+
+// Public helper if you want to call it directly from UI
+export function dangerMoveTimingFor(attacker, defender) {
+    const best = bestChargedAgainst(attacker?.speciesId || attacker?.name, defender?.speciesId || defender?.name, attacker?.chargedMoves || []);
+    if (!best) return null;
+    const t = turnsToMove(attacker?.fastMove, best.energyCost);
+    return { moveId: best.id, ...t };
+}
+
+// ---------------- adapter -> engine ----------------
 function toEngineSide(src, leagueName, shields) {
     const cap = capLeague(leagueName);
     const sid = src?.speciesId || src?.name || "";
@@ -233,7 +271,7 @@ function toEngineSide(src, leagueName, shields) {
         name: src?.name || src?.speciesId || sid,
         fastMove: src?.fastMove,
         chargedMoves: src?.chargedMoves || [],
-        shields: Math.max(0, shields | 0),
+        shields: Math.max(0, Math.min(2, shields | 0)),
         level,
         base
     };
@@ -242,17 +280,41 @@ function toEngineSide(src, leagueName, shields) {
 export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2, _bookIgnored, leagueName = "Master League") {
     const p1 = toEngineSide(attackerIn, leagueName, shieldsA);
     const p2 = toEngineSide(defenderIn, leagueName, shieldsB);
-    const r = simulateBattle(p1, p2, MOVES);
+
+    const r = simulateBattle(p1, p2, MOVES) || {};
+    const p1s = r.p1 || { hp: 0 };
+    const p2s = r.p2 || { hp: 0 };
+    const res = r.result || "draw";
+
+    // Compute most dangerous charged move for each side and time to reach
+    const enemyBest = bestChargedAgainst(p2.speciesId, p1.speciesId, p2.chargedMoves) || null;
+    const mineBest = bestChargedAgainst(p1.speciesId, p2.speciesId, p1.chargedMoves) || null;
+    const enemyTime = enemyBest ? turnsToMove(p2.fastMove, enemyBest.energyCost) : null;
+    const mineTime = mineBest ? turnsToMove(p1.fastMove, mineBest.energyCost) : null;
 
     return {
         winner:
-            r.result === "draw" ? "Draw" :
-                r.result === "p1" ? (attackerIn.name || attackerIn.speciesId) :
-                    r.result === "p2" ? (defenderIn.name || defenderIn.speciesId) : "Draw",
-        aHP: r.p1.hp,
-        bHP: r.p2.hp,
-        aRecommended: r.p1Best || (attackerIn.chargedMoves && attackerIn.chargedMoves[0]) || null,
-        bRecommended: r.p2Best || (defenderIn.chargedMoves && defenderIn.chargedMoves[0]) || null,
+            res === "draw" ? "Draw" :
+                res === "p1" ? (attackerIn.name || attackerIn.speciesId) :
+                    res === "p2" ? (defenderIn.name || defenderIn.speciesId) : "Draw",
+        aHP: num(p1s.hp, 0),
+        bHP: num(p2s.hp, 0),
+
+        // what to throw
+        aRecommended: r.p1Best ?? attackerIn.chargedMoves?.[0] ?? null,
+        bRecommended: r.p2Best ?? defenderIn.chargedMoves?.[0] ?? null,
+
+        // NEW - single most dangerous charged move and timing to reach it
+        aMostDangerous: mineBest ? mineBest.id : null,
+        aFastMovesToDanger: mineTime ? mineTime.fasts : null,
+        aTurnsToDanger: mineTime ? mineTime.turns : null,
+        aSecondsToDanger: mineTime ? mineTime.seconds : null,
+
+        bMostDangerous: enemyBest ? enemyBest.id : null,
+        bFastMovesToDanger: enemyTime ? enemyTime.fasts : null,
+        bTurnsToDanger: enemyTime ? enemyTime.turns : null,
+        bSecondsToDanger: enemyTime ? enemyTime.seconds : null,
+
         summary: []
     };
 }
@@ -265,6 +327,13 @@ export function bestOfThree(mine, enemy, myShields, foeShields, _bookIgnored, le
         const score = r.winner === you.name ? 1 : (r.winner === "Draw" ? 0 : -1);
         return { you: you.name, vs: foe.name, ...r, score };
     });
-    fights.sort((a, b) => (b.score - a.score) || (b.aHP - a.aHP) || (b.bHP - a.bHP));
+
+    fights.sort((a, b) => {
+        const s = b.score - a.score;
+        if (s) return s;
+        if (b.aHP !== a.aHP) return b.aHP - a.aHP;
+        return a.bHP - b.bHP;
+    });
+
     return { best: fights[0], fights };
 }

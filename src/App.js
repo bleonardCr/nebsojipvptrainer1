@@ -7,8 +7,8 @@ import gm from "./Data/gamemaster.json";
 import {
     buildMoveBook,
     bestOfThree,
-    recommendMovesFor,
-    dangerMovesFor,
+    recommendMovesFor
+    // dangerMovesFor, // no longer needed - using timing from simulateDuel results
 } from "./battleCalc";
 
 /* ---------------- Small UI bits ---------------- */
@@ -132,7 +132,7 @@ export default function App() {
     const [poolIndex, setPoolIndex] = useState({});
     const [loadError, setLoadError] = useState("");
 
-    // teams — always show 3 boxes, only 1 required
+    // teams - always show 3 boxes, only 1 required
     const empty = { id: "", label: "", dead: false };
     const [me, setMe] = useState([{ ...empty }, { ...empty }, { ...empty }]);
     const [op, setOp] = useState([{ ...empty }, { ...empty }, { ...empty }]);
@@ -242,23 +242,36 @@ export default function App() {
                 undefined,
                 league
             );
+
+            // find the fight row that matches the best pick
             const bestFight = fights.find((f) => f.you === best.you) || fights[0];
 
-            // danger moves = top 2 enemy charged vs my best pick
-            const myBest =
-                myTeamAlive.find((x) => x.name === best.you) || myTeamAlive[0];
-            const threatMoves = dangerMovesFor(
-                enemy.speciesId,
-                myBest.speciesId,
-                enemy.chargedMoves || []
-            );
+            // extract single most dangerous move and timing for enemy and for me
+            const enemyDanger = bestFight?.bMostDangerous
+                ? {
+                    id: bestFight.bMostDangerous,
+                    fasts: bestFight.bFastMovesToDanger,
+                    turns: bestFight.bTurnsToDanger,
+                    seconds: Number(bestFight.bSecondsToDanger || 0)
+                }
+                : null;
+
+            const myDanger = bestFight?.aMostDangerous
+                ? {
+                    id: bestFight.aMostDangerous,
+                    fasts: bestFight.aFastMovesToDanger,
+                    turns: bestFight.aTurnsToDanger,
+                    seconds: Number(bestFight.aSecondsToDanger || 0)
+                }
+                : null;
 
             return {
                 enemy: enemy.name,
                 bestPick: best.you,
                 yourRecommended: bestFight?.aRecommended || "",
-                enemyThreats: threatMoves, // array of up to 2
-                fights,
+                enemyDanger,
+                myDanger,
+                fights
             };
         });
 
@@ -270,7 +283,7 @@ export default function App() {
         setOp([{ ...empty }, { ...empty }, { ...empty }]);
         setResults(null);
         setOpShields(2);
-        // keep my shields as-is, or reset both? You asked to reset both earlier; do both:
+        // reset both shields for simplicity
         setMyShields(2);
     }
     function resetMyTeam() {
@@ -479,14 +492,23 @@ export default function App() {
                                             borderRadius: 999,
                                         }}
                                     >
-                                        Danger moves:{" "}
-                                        <b>{E.enemyThreats?.length ? E.enemyThreats.join(", ") : "—"}</b>
+                                        {/* single enemy danger move + timing */}
+                                        Danger move:{" "}
+                                        <b>
+                                            {E.enemyDanger ? E.enemyDanger.id : "—"}
+                                        </b>
+                                        {E.enemyDanger && (
+                                            <> - {E.enemyDanger.fasts} fasts - {E.enemyDanger.turns} turns - {E.enemyDanger.seconds.toFixed(1)}s</>
+                                        )}
                                     </div>
                                 </div>
 
                                 <div style={{ fontSize: 13, color: "#374151", marginTop: 6, marginBottom: 8 }}>
-                                    Best of your team: <b>{E.bestPick}</b> &nbsp;|&nbsp; Your charged to throw:{" "}
-                                    <b>{E.yourRecommended || "—"}</b>
+                                    Best of your team: <b>{E.bestPick}</b> &nbsp;|&nbsp; Your danger move:{" "}
+                                    <b>{E.myDanger ? E.myDanger.id : "—"}</b>
+                                    {E.myDanger && (
+                                        <> - {E.myDanger.fasts} fasts - {E.myDanger.turns} turns - {E.myDanger.seconds.toFixed(1)}s</>
+                                    )}
                                 </div>
 
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
@@ -530,7 +552,7 @@ export default function App() {
                     </div>
                     <div style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
                         Competitive-lite sim (turns, energy, type, STAB, shields). IVs/buffs can
-                        be added later—UI stays the same.
+                        be added later - UI stays the same.
                     </div>
                 </div>
             )}
