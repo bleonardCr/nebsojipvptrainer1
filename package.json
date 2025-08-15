@@ -7,7 +7,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:leagues": "node scripts/buildLeaguesFromGM.js"
   },
   "dependencies": {
     "react": "^19.1.1",
