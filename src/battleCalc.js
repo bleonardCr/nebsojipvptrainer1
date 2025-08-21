@@ -1,13 +1,8 @@
-﻿// src/battleCalc.js
-// PvP lite sim with fixed turn-order (fast first, then charged by CMP),
-// corrected shield decision (estimate using ATTACKER stats), and
-// full exports used by App.js: buildMoveBook, recommendMovesFor, bestOfThree, simulateDuel.
+﻿// PvP lite sim (turn order: fast first, then charged by CMP). Includes timing helpers.
 
-/* --------------------- Books --------------------- */
 let SPECIES = {}; // speciesId -> { atk, def, sta, types: [...] }
-let MOVES = {};   // MOVE_ID   -> { id, kind: "fast"|"charged", type, power, energyGain, energyCost, turns }
+let MOVES = {};   // MOVE_ID -> { id, kind: "fast"|"charged", type, power, energyGain, energyCost, turns }
 
-/* --------------------- Utils --------------------- */
 const num = (v, d = 0) => (Number.isFinite(Number(v)) ? Number(v) : d);
 
 function canonMoveId(s) {
@@ -36,7 +31,7 @@ function capLeague(league) {
     return typeof league === "string" ? (map[league] ?? Infinity) : (Number.isFinite(league) ? Number(league) : Infinity);
 }
 
-/* --------------------- CPM & Level --------------------- */
+/* ----- CPM / level ----- */
 const CPM = [];
 (function fillCPM() {
     const t = [
@@ -66,7 +61,7 @@ function levelForCap(baseAtk, baseDef, baseSta, cap) {
     return best;
 }
 
-/* --------------------- Types & Damage --------------------- */
+/* ----- Types / damage ----- */
 const TYPES = [
     "Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel",
     "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", "Fairy"
@@ -99,7 +94,7 @@ function dmg(power, atk, def, stab, effm) {
     return Math.max(1, Math.floor(raw) + 1);
 }
 
-/* --------------------- Build books from GM --------------------- */
+/* ----- Books from GM ----- */
 function buildSpeciesBook(gm) {
     const lists = [gm?.pokemon, gm?.data?.pokemon, gm?.species, gm?.pokemonList, gm?.pokemonSettings].filter(Boolean);
     const out = {};
@@ -151,7 +146,6 @@ export function buildMoveBook(gm) {
         }
     }
 
-    // Fallback fast & generic charged
     out.TACKLE = out.TACKLE || { id: "TACKLE", kind: "fast", type: "Normal", power: 3, energyGain: 8, energyCost: 0, turns: 1 };
     out.GENERIC_CHARGED = { id: "GENERIC_CHARGED", kind: "charged", type: "Normal", power: 70, energyCost: 45 };
     out.GENERIC_CHARGED2 = { id: "GENERIC_CHARGED2", kind: "charged", type: "Normal", power: 90, energyCost: 55 };
@@ -160,7 +154,7 @@ export function buildMoveBook(gm) {
     return out;
 }
 
-/* --------------------- Fighters --------------------- */
+/* ----- Fighters ----- */
 function buildFighter(src, leagueName) {
     const cap = capLeague(leagueName);
     const sid = normId(src.speciesId || src.name);
@@ -173,11 +167,16 @@ function buildFighter(src, leagueName) {
     const Def = base.def * cpm;
     const HP = Math.max(1, Math.floor(base.sta * cpm));
 
-    const fast = MOVES[canonMoveId(src.fastMove)] || MOVES.TACKLE;
-    const chargedMoves = (src.chargedMoves || [])
-        .map(canonMoveId)
-        .map(id => MOVES[id])
-        .filter(Boolean);
+    const fastRaw = typeof src.fastMove === "string" ? src.fastMove : (src.fastMove?.id || "");
+    const fast = MOVES[canonMoveId(fastRaw)] || MOVES.TACKLE;
+
+    const chargedMoves = [];
+    const rawList = Array.isArray(src.chargedMoves) ? src.chargedMoves : [];
+    for (const entry of rawList) {
+        const id = typeof entry === "string" ? entry : (entry?.id || "");
+        const mv = MOVES[canonMoveId(id)];
+        if (mv && mv.kind === "charged") chargedMoves.push(mv);
+    }
     if (chargedMoves.length === 0) {
         chargedMoves.push(MOVES.GENERIC_CHARGED, MOVES.GENERIC_CHARGED2);
     }
@@ -193,15 +192,45 @@ function buildFighter(src, leagueName) {
     };
 }
 
-/* --------------------- Helpers used by App --------------------- */
+/* ----- Move recommendations (editable) ----- */
+const MOVE_RECS = {
+    dragonite: { fastMove: "DRAGON_BREATH", chargedMoves: ["DRAGON_CLAW", "SUPERPOWER"] },
+    dialga: { fastMove: "DRAGON_BREATH", chargedMoves: ["IRON_HEAD", "DRACO_METEOR"] },
+    dialga_origin: { fastMove: "DRAGON_BREATH", chargedMoves: ["ROAR_OF_TIME", "IRON_HEAD"] },
+    garchomp: { fastMove: "MUD_SHOT", chargedMoves: ["EARTH_POWER", "OUTRAGE"] },
+    kyurem: { fastMove: "DRAGON_BREATH", chargedMoves: ["GLACIATE", "DRAGON_CLAW"] },
+    palkia: { fastMove: "DRAGON_BREATH", chargedMoves: ["AQUA_TAIL", "DRACO_METEOR"] },
+    reshiram: { fastMove: "DRAGON_BREATH", chargedMoves: ["FUSION_FLARE", "DRACO_METEOR"] },
+    zekrom: { fastMove: "DRAGON_BREATH", chargedMoves: ["FUSION_BOLT", "CRUNCH"] },
+
+    groudon: { fastMove: "MUD_SHOT", chargedMoves: ["PRECIPICE_BLADES", "FIRE_PUNCH"] },
+    kyogre: { fastMove: "WATERFALL", chargedMoves: ["SURF", "THUNDER"] },
+    ho_oh: { fastMove: "INCINERATE", chargedMoves: ["SACRED_FIRE", "BRAVE_BIRD"] },
+    mewtwo: { fastMove: "PSYCHO_CUT", chargedMoves: ["PSYSTRIKE", "SHADOW_BALL"] },
+
+    metagross: { fastMove: "BULLET_PUNCH", chargedMoves: ["METEOR_MASH", "EARTHQUAKE"] },
+    melmetal: { fastMove: "THUNDER_SHOCK", chargedMoves: ["DOUBLE_IRON_BASH", "ROCK_SLIDE"] },
+    rhyperior: { fastMove: "SMACK_DOWN", chargedMoves: ["ROCK_WRECKER", "SURF"] },
+    excadrill: { fastMove: "MUD_SHOT", chargedMoves: ["DRILL_RUN", "ROCK_SLIDE"] },
+    landorus_therian: { fastMove: "MUD_SHOT", chargedMoves: ["STONE_EDGE", "EARTHQUAKE"] },
+
+    togekiss: { fastMove: "CHARM", chargedMoves: ["ANCIENT_POWER", "FLAMETHROWER"] },
+    yveltal: { fastMove: "SNARL", chargedMoves: ["OBLIVION_WING", "DARK_PULSE"] },
+    xerneas: { fastMove: "GEOMANCY", chargedMoves: ["MOONBLAST", "THUNDER"] },
+    hydreigon: { fastMove: "DRAGON_BREATH", chargedMoves: ["BRUTAL_SWING", "DRAGON_PULSE"] },
+
+    zacian_crowned_sword: { fastMove: "METAL_CLAW", chargedMoves: ["CLOSE_COMBAT", "IRON_HEAD"] },
+    zamazenta_crowned_shield: { fastMove: "METAL_CLAW", chargedMoves: ["CLOSE_COMBAT", "IRON_HEAD"] },
+
+    primarina: { fastMove: "CHARM", chargedMoves: ["MOONBLAST", "HYDRO_PUMP"] },
+};
+
 export function recommendMovesFor(_speciesId, baseEntry) {
-    // If league list already supplies moves, leave it alone.
     if (baseEntry?.fastMove || (baseEntry?.chargedMoves?.length)) return {};
-    // Otherwise provide neutral fallbacks so the sim is never empty-handed.
-    return {
-        fastMove: "TACKLE",
-        chargedMoves: ["GENERIC_CHARGED", "GENERIC_CHARGED2"]
-    };
+    const sid = normId(_speciesId || baseEntry?.speciesId);
+    const rec = MOVE_RECS[sid];
+    if (rec) return rec;
+    return { fastMove: "TACKLE", chargedMoves: ["GENERIC_CHARGED", "GENERIC_CHARGED2"] };
 }
 
 function bestCharged(att, def) {
@@ -216,7 +245,7 @@ function bestCharged(att, def) {
     return best;
 }
 
-/* --------------------- Duel (fixed turn order + shields) --------------------- */
+/* ----- Duel ----- */
 function shouldShield(attacker, defender, incomingMove, shieldsLeft) {
     if (shieldsLeft <= 0) return false;
     const stab = attacker.types.includes(incomingMove.type) ? STAB : 1;
@@ -249,10 +278,11 @@ export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2,
         }
     }
 
-    function canThrow(u) { return (u.chargedMoves || []).some(m => u.energy >= (m.energyCost || 45)); }
+    function canThrow(u) { return (u.chargedMoves || []).some(m => m && u.energy >= (m.energyCost || 45)); }
     function chooseThrow(u, foe) {
         let pick = null, best = -Infinity;
         for (const m of (u.chargedMoves || [])) {
+            if (!m) continue;
             if (u.energy < (m.energyCost || 45)) continue;
             const stab = u.types.includes(m.type) ? STAB : 1;
             const mult = eff(m.type, foe.types);
@@ -287,13 +317,11 @@ export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2,
     while (A.HP > 0 && B.HP > 0 && t < MAX_TURNS) {
         t++;
 
-        // 1) both sides advance fast first
         progressFast(A, B);
         if (B.HP <= 0) break;
         progressFast(B, A);
         if (A.HP <= 0) break;
 
-        // 2) then resolve charged in CMP order
         const aReady = canThrow(A);
         const bReady = canThrow(B);
         if (aReady || bReady) {
@@ -326,7 +354,28 @@ export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2,
     };
 }
 
-/* --------------------- Best-of-three wrapper --------------------- */
+/* ----- Timing helpers ----- */
+export function getMoveDetails(id) {
+    if (!id) return null;
+    const key = canonMoveId(id);
+    return MOVES[key] || null;
+}
+export function secondsToFirstCharged(fastId, chargedId) {
+    const f = getMoveDetails(fastId);
+    const c = getMoveDetails(chargedId);
+    if (!f || !c || f.kind !== "fast" || c.kind !== "charged") return null;
+    const fastsNeeded = Math.ceil((c.energyCost || 45) / Math.max(1, f.energyGain || 8));
+    const turns = fastsNeeded * (f.turns || 1);
+    return Number((turns * 0.5).toFixed(1)); // 1 PvP turn = 0.5s
+}
+export function fastsToFirstCharged(fastId, chargedId) {
+    const f = getMoveDetails(fastId);
+    const c = getMoveDetails(chargedId);
+    if (!f || !c || f.kind !== "fast" || c.kind !== "charged") return null;
+    return Math.ceil((c.energyCost || 45) / Math.max(1, f.energyGain || 8));
+}
+
+/* ----- Best-of-three ----- */
 export function bestOfThree(mine, enemy, myShields, foeShields, _book = MOVES, leagueName = "Master League") {
     const fights = mine.map(m => {
         const you = { ...m, name: m.name || m.speciesId };

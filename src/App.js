@@ -1,10 +1,16 @@
-﻿// src/App.js
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import PokemonSelect from "./components/PokemonSelect";
 import { dedupeBySpecies, toOptions, humanize, indexById } from "./lib/pokeList";
 import { LEAGUE_NAMES, importLeague } from "./Data/leagueFiles";
 import gm from "./Data/gamemaster.json";
-import { buildMoveBook, bestOfThree, recommendMovesFor } from "./battleCalc";
+import {
+    buildMoveBook,
+    bestOfThree,
+    recommendMovesFor,
+    secondsToFirstCharged,
+    fastsToFirstCharged,
+} from "./battleCalc";
+import QuickMatrix from "./components/QuickMatrix";
 
 /* ---------------- Small UI bits ---------------- */
 function ShieldPicker({ label, value, onChange, onReset }) {
@@ -99,7 +105,7 @@ function KillToggle({ dead, onToggle }) {
 
 /* ---------------- App ---------------- */
 export default function App() {
-    // build move/species book once from gamemaster
+    // Build move/species book once from gamemaster
     useEffect(() => {
         try {
             buildMoveBook(gm);
@@ -142,7 +148,7 @@ export default function App() {
     }
 
     // Only commit an ID if typed label matches an eligible Pokémon.
-    // Keep the label while typing so the input doesn't "fight" the user.
+    // Keep the label while typing so the input doesn't fight the user.
     function selectFromLabel(current, setFn, i, typedLabel) {
         const picked = poolRaw.find(
             (x) => humanize(x.speciesId) === typedLabel || x.speciesId === typedLabel
@@ -150,7 +156,7 @@ export default function App() {
         const next = [...current];
         next[i] = {
             id: picked ? picked.speciesId : "",
-            label: typedLabel, // show what the user typed; only counts once it matches an eligible option
+            label: typedLabel,
             dead: false,
         };
         setFn(next);
@@ -233,11 +239,20 @@ export default function App() {
                 league
             );
             const bestFight = fights.find((f) => f.you === best.you) || fights[0];
+
+            // timing pill
+            const enemyFast = enemy.fastMove || "TACKLE";
+            const enemyThreat = bestFight?.bRecommended || "";
+            const dangerFastCount = fastsToFirstCharged(enemyFast, enemyThreat);
+            const dangerSeconds = secondsToFirstCharged(enemyFast, enemyThreat);
+
             return {
                 enemy: enemy.name,
                 bestPick: best.you,
                 yourRecommended: bestFight?.aRecommended || "",
-                enemyThreat: bestFight?.bRecommended || "",
+                enemyThreat,
+                dangerFastCount,
+                dangerSeconds,
                 fights,
             };
         });
@@ -259,9 +274,15 @@ export default function App() {
     }
 
     /* ----- styles ----- */
-    const INPUT_MAX = 420; // shorten those search bars
+    const INPUT_MAX = 420;
     const h1 = { textAlign: "center", fontSize: 34, fontWeight: 800, margin: "28px 0" };
-    const box = { border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, marginBottom: 18, background: "#fff" };
+    const box = {
+        border: "1px solid #e5e7eb",
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 18,
+        background: "#fff",
+    };
     const colWrap = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 12 };
     const small = { fontSize: 13, color: "#6b7280" };
     const resultsGrid = {
@@ -270,6 +291,8 @@ export default function App() {
         gap: 12,
         alignItems: "start",
     };
+
+    const haveMyTeam = me.some((m) => !!m.id && !m.dead);
 
     return (
         <div
@@ -293,7 +316,9 @@ export default function App() {
                     ))}
                 </select>
                 {loadError && (
-                    <div style={{ color: "#b91c1c", marginTop: 8, fontSize: 13 }}>Failed to load league data: {loadError}</div>
+                    <div style={{ color: "#b91c1c", marginTop: 8, fontSize: 13 }}>
+                        Failed to load league data: {loadError}
+                    </div>
                 )}
             </div>
 
@@ -410,7 +435,10 @@ export default function App() {
                                             borderRadius: 999,
                                         }}
                                     >
-                                        Danger move: <b>{E.enemyThreat || "—"}</b>
+                                        Danger: <b>{E.enemyThreat || "—"}</b>
+                                        {E.dangerFastCount != null && E.dangerSeconds != null ? (
+                                            <> · {E.dangerFastCount} fasts (~{E.dangerSeconds}s)</>
+                                        ) : null}
                                     </div>
                                 </div>
 
@@ -450,9 +478,27 @@ export default function App() {
                         ))}
                     </div>
                     <div style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
-                        Competitive-lite sim (turns, energy, type, STAB, shields). We can add IVs/buffs later—UI stays the same.
+                        Competitive-lite sim (turns, energy, type, STAB, shields).
                     </div>
                 </div>
+            )}
+
+            {/* Quick Matrix */}
+            {haveMyTeam && (
+                <QuickMatrix
+                    league={league}
+                    poolRaw={poolRaw}
+                    poolIndex={poolIndex}
+                    myTeamAlive={me
+                        .filter((m) => !m.dead && m.id)
+                        .map((s) => {
+                            const base = { ...poolIndex[s.id], name: s.label };
+                            const rec = recommendMovesFor(s.id, poolIndex[s.id]);
+                            return { ...base, ...rec };
+                        })}
+                    myShields={myShields}
+                    foeShields={opShields}
+                />
             )}
         </div>
     );
