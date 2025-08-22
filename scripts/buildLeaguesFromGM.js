@@ -8,8 +8,8 @@ const cp = (a, d, s, c) => Math.floor((a * Math.sqrt(d) * Math.sqrt(s) * c * c) 
 function levelForCap(a, d, s, cap) { if (!Number.isFinite(cap)) return 50; let best = 1; for (let i = 1; i < CPM.length; i++) { const c = CPM[i]; if (!c) continue; if (cp(a * c, d * c, s * c, 1) <= cap) best = i; } return best; }
 
 // ---- Paths (note: no 'leagueFiles' subfolder) ----
-const DATA_DIR = path.join(__dirname, "../src/Data");
-const GM_PATH = path.join(DATA_DIR, "gamemaster.json");
+const DATA_DIR = path.join(__dirname, "../src/Data/leagueFiles");
+const GM_PATH = path.join(__dirname, "../src/Data/gamemaster.json")
 const GREAT = path.join(DATA_DIR, "great.json");
 const ULTRA = path.join(DATA_DIR, "ultra.json");
 const MASTER = path.join(DATA_DIR, "master.json");

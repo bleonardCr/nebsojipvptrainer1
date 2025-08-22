@@ -1,158 +1,5087 @@
 [
   {
+    "speciesId": "abomasnow"
+  },
+  {
+    "speciesId": "abomasnow_mega"
+  },
+  {
+    "speciesId": "abomasnow_shadow"
+  },
+  {
+    "speciesId": "abra"
+  },
+  {
+    "speciesId": "abra_shadow"
+  },
+  {
+    "speciesId": "absol"
+  },
+  {
+    "speciesId": "absol_mega"
+  },
+  {
+    "speciesId": "absol_shadow"
+  },
+  {
+    "speciesId": "accelgor"
+  },
+  {
+    "speciesId": "accelgor_shadow"
+  },
+  {
+    "speciesId": "aegislash_blade"
+  },
+  {
+    "speciesId": "aegislash_shield"
+  },
+  {
+    "speciesId": "aerodactyl"
+  },
+  {
+    "speciesId": "aerodactyl_mega"
+  },
+  {
+    "speciesId": "aerodactyl_shadow"
+  },
+  {
+    "speciesId": "aggron"
+  },
+  {
+    "speciesId": "aggron_mega"
+  },
+  {
+    "speciesId": "aggron_shadow"
+  },
+  {
+    "speciesId": "aipom"
+  },
+  {
+    "speciesId": "aipom_shadow"
+  },
+  {
+    "speciesId": "alakazam"
+  },
+  {
+    "speciesId": "alakazam_mega"
+  },
+  {
+    "speciesId": "alakazam_shadow"
+  },
+  {
+    "speciesId": "alcremie"
+  },
+  {
+    "speciesId": "alomomola"
+  },
+  {
+    "speciesId": "altaria"
+  },
+  {
+    "speciesId": "altaria_mega"
+  },
+  {
+    "speciesId": "amaura"
+  },
+  {
+    "speciesId": "amaura_shadow"
+  },
+  {
+    "speciesId": "ambipom"
+  },
+  {
+    "speciesId": "ambipom_shadow"
+  },
+  {
+    "speciesId": "amoonguss"
+  },
+  {
+    "speciesId": "amoonguss_shadow"
+  },
+  {
+    "speciesId": "ampharos"
+  },
+  {
+    "speciesId": "ampharos_mega"
+  },
+  {
+    "speciesId": "ampharos_shadow"
+  },
+  {
+    "speciesId": "annihilape"
+  },
+  {
+    "speciesId": "annihilape_shadow"
+  },
+  {
+    "speciesId": "anorith"
+  },
+  {
+    "speciesId": "anorith_shadow"
+  },
+  {
+    "speciesId": "appletun"
+  },
+  {
+    "speciesId": "applin"
+  },
+  {
+    "speciesId": "araquanid"
+  },
+  {
+    "speciesId": "arbok"
+  },
+  {
+    "speciesId": "arbok_shadow"
+  },
+  {
+    "speciesId": "arboliva"
+  },
+  {
+    "speciesId": "arcanine"
+  },
+  {
+    "speciesId": "arcanine_hisuian"
+  },
+  {
+    "speciesId": "arcanine_shadow"
+  },
+  {
+    "speciesId": "arceus"
+  },
+  {
+    "speciesId": "arceus_bug"
+  },
+  {
+    "speciesId": "arceus_dark"
+  },
+  {
+    "speciesId": "arceus_dragon"
+  },
+  {
+    "speciesId": "arceus_electric"
+  },
+  {
+    "speciesId": "arceus_fairy"
+  },
+  {
+    "speciesId": "arceus_fighting"
+  },
+  {
+    "speciesId": "arceus_fire"
+  },
+  {
+    "speciesId": "arceus_flying"
+  },
+  {
+    "speciesId": "arceus_ghost"
+  },
+  {
+    "speciesId": "arceus_grass"
+  },
+  {
+    "speciesId": "arceus_ground"
+  },
+  {
+    "speciesId": "arceus_ice"
+  },
+  {
+    "speciesId": "arceus_poison"
+  },
+  {
+    "speciesId": "arceus_psychic"
+  },
+  {
+    "speciesId": "arceus_rock"
+  },
+  {
+    "speciesId": "arceus_steel"
+  },
+  {
+    "speciesId": "arceus_water"
+  },
+  {
+    "speciesId": "archen"
+  },
+  {
+    "speciesId": "archen_shadow"
+  },
+  {
+    "speciesId": "archeops"
+  },
+  {
+    "speciesId": "archeops_shadow"
+  },
+  {
+    "speciesId": "arctibax"
+  },
+  {
+    "speciesId": "arctovish"
+  },
+  {
+    "speciesId": "arctozolt"
+  },
+  {
+    "speciesId": "ariados"
+  },
+  {
+    "speciesId": "armaldo"
+  },
+  {
+    "speciesId": "armaldo_shadow"
+  },
+  {
+    "speciesId": "armarouge"
+  },
+  {
+    "speciesId": "aromatisse"
+  },
+  {
+    "speciesId": "aron"
+  },
+  {
+    "speciesId": "aron_shadow"
+  },
+  {
+    "speciesId": "arrokuda"
+  },
+  {
+    "speciesId": "articuno"
+  },
+  {
+    "speciesId": "articuno_galarian"
+  },
+  {
+    "speciesId": "articuno_shadow"
+  },
+  {
+    "speciesId": "audino"
+  },
+  {
+    "speciesId": "audino_mega"
+  },
+  {
+    "speciesId": "aurorus"
+  },
+  {
+    "speciesId": "aurorus_shadow"
+  },
+  {
+    "speciesId": "avalugg"
+  },
+  {
+    "speciesId": "avalugg_hisuian"
+  },
+  {
+    "speciesId": "axew"
+  },
+  {
+    "speciesId": "azelf"
+  },
+  {
+    "speciesId": "azumarill"
+  },
+  {
+    "speciesId": "azurill"
+  },
+  {
+    "speciesId": "bagon"
+  },
+  {
+    "speciesId": "bagon_shadow"
+  },
+  {
+    "speciesId": "baltoy"
+  },
+  {
+    "speciesId": "banette"
+  },
+  {
+    "speciesId": "banette_mega"
+  },
+  {
+    "speciesId": "banette_shadow"
+  },
+  {
+    "speciesId": "barbaracle"
+  },
+  {
+    "speciesId": "barboach"
+  },
+  {
+    "speciesId": "barboach_shadow"
+  },
+  {
+    "speciesId": "barraskewda"
+  },
+  {
+    "speciesId": "basculegion_female"
+  },
+  {
+    "speciesId": "basculegion_male"
+  },
+  {
+    "speciesId": "basculin"
+  },
+  {
+    "speciesId": "bastiodon"
+  },
+  {
+    "speciesId": "bastiodon_shadow"
+  },
+  {
+    "speciesId": "baxcalibur"
+  },
+  {
+    "speciesId": "bayleef"
+  },
+  {
+    "speciesId": "bayleef_shadow"
+  },
+  {
+    "speciesId": "beartic"
+  },
+  {
+    "speciesId": "beautifly"
+  },
+  {
+    "speciesId": "beedrill"
+  },
+  {
+    "speciesId": "beedrill_mega"
+  },
+  {
+    "speciesId": "beedrill_shadow"
+  },
+  {
+    "speciesId": "beheeyem"
+  },
+  {
+    "speciesId": "beldum"
+  },
+  {
+    "speciesId": "beldum_shadow"
+  },
+  {
+    "speciesId": "bellibolt"
+  },
+  {
+    "speciesId": "bellossom"
+  },
+  {
+    "speciesId": "bellossom_shadow"
+  },
+  {
+    "speciesId": "bellsprout"
+  },
+  {
+    "speciesId": "bellsprout_shadow"
+  },
+  {
+    "speciesId": "bergmite"
+  },
+  {
+    "speciesId": "bewear"
+  },
+  {
+    "speciesId": "bibarel"
+  },
+  {
+    "speciesId": "bibarel_shadow"
+  },
+  {
+    "speciesId": "bidoof"
+  },
+  {
+    "speciesId": "bidoof_shadow"
+  },
+  {
+    "speciesId": "binacle"
+  },
+  {
+    "speciesId": "bisharp"
+  },
+  {
+    "speciesId": "blacephalon"
+  },
+  {
+    "speciesId": "blastoise"
+  },
+  {
+    "speciesId": "blastoise_mega"
+  },
+  {
+    "speciesId": "blastoise_shadow"
+  },
+  {
+    "speciesId": "blaziken"
+  },
+  {
+    "speciesId": "blaziken_mega"
+  },
+  {
+    "speciesId": "blaziken_shadow"
+  },
+  {
+    "speciesId": "blipbug"
+  },
+  {
+    "speciesId": "blissey"
+  },
+  {
+    "speciesId": "blitzle"
+  },
+  {
+    "speciesId": "blitzle_shadow"
+  },
+  {
+    "speciesId": "boldore"
+  },
+  {
+    "speciesId": "boldore_shadow"
+  },
+  {
+    "speciesId": "boltund"
+  },
+  {
+    "speciesId": "bombirdier"
+  },
+  {
+    "speciesId": "bonsly"
+  },
+  {
+    "speciesId": "bouffalant"
+  },
+  {
+    "speciesId": "bounsweet"
+  },
+  {
+    "speciesId": "braixen"
+  },
+  {
+    "speciesId": "brambleghast"
+  },
+  {
+    "speciesId": "bramblin"
+  },
+  {
+    "speciesId": "braviary"
+  },
+  {
+    "speciesId": "braviary_hisuian"
+  },
+  {
+    "speciesId": "breloom"
+  },
+  {
+    "speciesId": "brionne"
+  },
+  {
+    "speciesId": "bronzong"
+  },
+  {
+    "speciesId": "bronzor"
+  },
+  {
+    "speciesId": "brutebonnet"
+  },
+  {
+    "speciesId": "bruxish"
+  },
+  {
+    "speciesId": "budew"
+  },
+  {
+    "speciesId": "buizel"
+  },
+  {
+    "speciesId": "bulbasaur"
+  },
+  {
+    "speciesId": "bulbasaur_shadow"
+  },
+  {
+    "speciesId": "buneary"
+  },
+  {
+    "speciesId": "bunnelby"
+  },
+  {
+    "speciesId": "bunnelby_shadow"
+  },
+  {
+    "speciesId": "burmy_plant"
+  },
+  {
+    "speciesId": "burmy_sandy"
+  },
+  {
+    "speciesId": "burmy_trash"
+  },
+  {
+    "speciesId": "butterfree"
+  },
+  {
+    "speciesId": "butterfree_shadow"
+  },
+  {
+    "speciesId": "buzzwole"
+  },
+  {
+    "speciesId": "cacnea"
+  },
+  {
+    "speciesId": "cacnea_shadow"
+  },
+  {
+    "speciesId": "cacturne"
+  },
+  {
+    "speciesId": "cacturne_shadow"
+  },
+  {
+    "speciesId": "calyrex"
+  },
+  {
+    "speciesId": "calyrex_ice_rider"
+  },
+  {
+    "speciesId": "camerupt"
+  },
+  {
+    "speciesId": "camerupt_shadow"
+  },
+  {
+    "speciesId": "capsakid"
+  },
+  {
+    "speciesId": "carbink"
+  },
+  {
+    "speciesId": "carkol"
+  },
+  {
+    "speciesId": "carnivine"
+  },
+  {
+    "speciesId": "carracosta"
+  },
+  {
+    "speciesId": "carracosta_shadow"
+  },
+  {
+    "speciesId": "carvanha"
+  },
+  {
+    "speciesId": "carvanha_shadow"
+  },
+  {
+    "speciesId": "cascoon"
+  },
+  {
+    "speciesId": "castform"
+  },
+  {
+    "speciesId": "castform_rainy"
+  },
+  {
+    "speciesId": "castform_snowy"
+  },
+  {
+    "speciesId": "castform_sunny"
+  },
+  {
+    "speciesId": "caterpie"
+  },
+  {
+    "speciesId": "caterpie_shadow"
+  },
+  {
+    "speciesId": "celebi"
+  },
+  {
+    "speciesId": "celesteela"
+  },
+  {
+    "speciesId": "centiskorch"
+  },
+  {
+    "speciesId": "ceruledge"
+  },
+  {
+    "speciesId": "cetitan"
+  },
+  {
+    "speciesId": "cetoddle"
+  },
+  {
+    "speciesId": "chandelure"
+  },
+  {
+    "speciesId": "chandelure_shadow"
+  },
+  {
+    "speciesId": "chansey"
+  },
+  {
+    "speciesId": "charcadet"
+  },
+  {
+    "speciesId": "charizard"
+  },
+  {
+    "speciesId": "charizard_mega_x"
+  },
+  {
+    "speciesId": "charizard_mega_y"
+  },
+  {
+    "speciesId": "charizard_shadow"
+  },
+  {
+    "speciesId": "charjabug"
+  },
+  {
+    "speciesId": "charmander"
+  },
+  {
+    "speciesId": "charmander_shadow"
+  },
+  {
+    "speciesId": "charmeleon"
+  },
+  {
+    "speciesId": "charmeleon_shadow"
+  },
+  {
+    "speciesId": "chatot"
+  },
+  {
+    "speciesId": "cherrim_overcast"
+  },
+  {
+    "speciesId": "cherrim_sunny"
+  },
+  {
+    "speciesId": "cherubi"
+  },
+  {
+    "speciesId": "chesnaught"
+  },
+  {
+    "speciesId": "chespin"
+  },
+  {
+    "speciesId": "chewtle"
+  },
+  {
+    "speciesId": "chi_yu"
+  },
+  {
+    "speciesId": "chien_pao"
+  },
+  {
+    "speciesId": "chikorita"
+  },
+  {
+    "speciesId": "chikorita_shadow"
+  },
+  {
+    "speciesId": "chimchar"
+  },
+  {
+    "speciesId": "chimchar_shadow"
+  },
+  {
+    "speciesId": "chimecho"
+  },
+  {
+    "speciesId": "chinchou"
+  },
+  {
+    "speciesId": "chingling"
+  },
+  {
+    "speciesId": "cinccino"
+  },
+  {
+    "speciesId": "cinderace"
+  },
+  {
+    "speciesId": "clamperl"
+  },
+  {
+    "speciesId": "clauncher"
+  },
+  {
+    "speciesId": "clawitzer"
+  },
+  {
+    "speciesId": "claydol"
+  },
+  {
+    "speciesId": "clefable"
+  },
+  {
+    "speciesId": "clefairy"
+  },
+  {
+    "speciesId": "cleffa"
+  },
+  {
+    "speciesId": "clobbopus"
+  },
+  {
+    "speciesId": "clodsire"
+  },
+  {
+    "speciesId": "clodsiresb"
+  },
+  {
+    "speciesId": "cloyster"
+  },
+  {
+    "speciesId": "cloyster_shadow"
+  },
+  {
+    "speciesId": "coalossal"
+  },
+  {
+    "speciesId": "cobalion"
+  },
+  {
+    "speciesId": "cofagrigus"
+  },
+  {
+    "speciesId": "combee"
+  },
+  {
+    "speciesId": "combusken"
+  },
+  {
+    "speciesId": "combusken_shadow"
+  },
+  {
+    "speciesId": "comfey"
+  },
+  {
+    "speciesId": "conkeldurr"
+  },
+  {
+    "speciesId": "conkeldurr_shadow"
+  },
+  {
+    "speciesId": "copperajah"
+  },
+  {
+    "speciesId": "corphish"
+  },
+  {
+    "speciesId": "corphish_shadow"
+  },
+  {
+    "speciesId": "corsola"
+  },
+  {
+    "speciesId": "corsola_galarian"
+  },
+  {
+    "speciesId": "corviknight"
+  },
+  {
+    "speciesId": "corvisquire"
+  },
+  {
+    "speciesId": "cosmoem"
+  },
+  {
+    "speciesId": "cosmog"
+  },
+  {
+    "speciesId": "cottonee"
+  },
+  {
+    "speciesId": "crabominable"
+  },
+  {
+    "speciesId": "crabrawler"
+  },
+  {
+    "speciesId": "cradily"
+  },
+  {
+    "speciesId": "cradily_shadow"
+  },
+  {
+    "speciesId": "cramorant"
+  },
+  {
+    "speciesId": "cranidos"
+  },
+  {
+    "speciesId": "cranidos_shadow"
+  },
+  {
+    "speciesId": "crawdaunt"
+  },
+  {
+    "speciesId": "crawdaunt_shadow"
+  },
+  {
+    "speciesId": "cresselia"
+  },
+  {
+    "speciesId": "cresselia_shadow"
+  },
+  {
+    "speciesId": "croagunk"
+  },
+  {
+    "speciesId": "croagunk_shadow"
+  },
+  {
+    "speciesId": "crobat"
+  },
+  {
+    "speciesId": "crobat_shadow"
+  },
+  {
+    "speciesId": "crocalor"
+  },
+  {
+    "speciesId": "croconaw"
+  },
+  {
+    "speciesId": "croconaw_shadow"
+  },
+  {
+    "speciesId": "crustle"
+  },
+  {
+    "speciesId": "crustle_shadow"
+  },
+  {
+    "speciesId": "cryogonal"
+  },
+  {
+    "speciesId": "cubchoo"
+  },
+  {
+    "speciesId": "cubone"
+  },
+  {
+    "speciesId": "cubone_shadow"
+  },
+  {
+    "speciesId": "cufant"
+  },
+  {
+    "speciesId": "cursola"
+  },
+  {
+    "speciesId": "cutiefly"
+  },
+  {
+    "speciesId": "cyclizar"
+  },
+  {
+    "speciesId": "cyndaquil"
+  },
+  {
+    "speciesId": "cyndaquil_shadow"
+  },
+  {
+    "speciesId": "dachsbun"
+  },
+  {
+    "speciesId": "darkrai"
+  },
+  {
+    "speciesId": "darmanitan_galarian_standard"
+  },
+  {
+    "speciesId": "darmanitan_galarian_zen"
+  },
+  {
+    "speciesId": "darmanitan_standard"
+  },
+  {
+    "speciesId": "darmanitan_standard_shadow"
+  },
+  {
+    "speciesId": "darmanitan_zen"
+  },
+  {
+    "speciesId": "dartrix"
+  },
+  {
+    "speciesId": "darumaka"
+  },
+  {
+    "speciesId": "darumaka_galarian"
+  },
+  {
+    "speciesId": "darumaka_shadow"
+  },
+  {
+    "speciesId": "decidueye"
+  },
+  {
+    "speciesId": "decidueye_hisuian"
+  },
+  {
+    "speciesId": "dedenne"
+  },
+  {
+    "speciesId": "deerling"
+  },
+  {
+    "speciesId": "deino"
+  },
+  {
+    "speciesId": "delcatty"
+  },
+  {
+    "speciesId": "delibird"
+  },
+  {
+    "speciesId": "delibird_shadow"
+  },
+  {
+    "speciesId": "delphox"
+  },
+  {
+    "speciesId": "deoxys"
+  },
+  {
+    "speciesId": "deoxys_attack"
+  },
+  {
+    "speciesId": "deoxys_defense"
+  },
+  {
+    "speciesId": "deoxys_speed"
+  },
+  {
+    "speciesId": "dewgong"
+  },
+  {
+    "speciesId": "dewott"
+  },
+  {
+    "speciesId": "dewott_shadow"
+  },
+  {
+    "speciesId": "dewpider"
+  },
+  {
+    "speciesId": "dhelmise"
+  },
+  {
+    "speciesId": "dialga"
+  },
+  {
     "speciesId": "dialga_origin",
     "fastMove": "DRAGON_BREATH",
-    "chargedMoves": [ "ROAR_OF_TIME", "IRON_HEAD" ]
+    "chargedMoves": [
+      "ROAR_OF_TIME",
+      "IRON_HEAD"
+    ]
+  },
+  {
+    "speciesId": "dialga_shadow"
+  },
+  {
+    "speciesId": "diancie"
+  },
+  {
+    "speciesId": "diancie_mega"
+  },
+  {
+    "speciesId": "diggersby"
+  },
+  {
+    "speciesId": "diggersby_shadow"
+  },
+  {
+    "speciesId": "diglett"
+  },
+  {
+    "speciesId": "diglett_alolan"
+  },
+  {
+    "speciesId": "diglett_alolan_shadow"
+  },
+  {
+    "speciesId": "diglett_shadow"
+  },
+  {
+    "speciesId": "ditto"
+  },
+  {
+    "speciesId": "dodrio"
+  },
+  {
+    "speciesId": "doduo"
+  },
+  {
+    "speciesId": "dolliv"
+  },
+  {
+    "speciesId": "dondozo"
+  },
+  {
+    "speciesId": "donphan"
+  },
+  {
+    "speciesId": "donphan_shadow"
+  },
+  {
+    "speciesId": "dottler"
+  },
+  {
+    "speciesId": "doublade"
+  },
+  {
+    "speciesId": "dracovish"
+  },
+  {
+    "speciesId": "dracozolt"
+  },
+  {
+    "speciesId": "dragalge"
+  },
+  {
+    "speciesId": "dragapult"
+  },
+  {
+    "speciesId": "dragonair"
+  },
+  {
+    "speciesId": "dragonair_shadow"
   },
   {
     "speciesId": "dragonite",
     "fastMove": "DRAGON_BREATH",
-    "chargedMoves": [ "DRAGON_CLAW", "SUPER_POWER" ]
+    "chargedMoves": [
+      "DRAGON_CLAW",
+      "SUPER_POWER"
+    ]
+  },
+  {
+    "speciesId": "dragonite_shadow"
+  },
+  {
+    "speciesId": "drakloak"
+  },
+  {
+    "speciesId": "drampa"
+  },
+  {
+    "speciesId": "drapion"
+  },
+  {
+    "speciesId": "drapion_shadow"
+  },
+  {
+    "speciesId": "dratini"
+  },
+  {
+    "speciesId": "dratini_shadow"
+  },
+  {
+    "speciesId": "drednaw"
+  },
+  {
+    "speciesId": "dreepy"
+  },
+  {
+    "speciesId": "drifblim"
+  },
+  {
+    "speciesId": "drifblim_shadow"
+  },
+  {
+    "speciesId": "drifloon"
+  },
+  {
+    "speciesId": "drifloon_shadow"
+  },
+  {
+    "speciesId": "drilbur"
+  },
+  {
+    "speciesId": "drilbur_shadow"
+  },
+  {
+    "speciesId": "drizzile"
+  },
+  {
+    "speciesId": "drowzee"
+  },
+  {
+    "speciesId": "drowzee_shadow"
+  },
+  {
+    "speciesId": "druddigon"
+  },
+  {
+    "speciesId": "dubwool"
+  },
+  {
+    "speciesId": "ducklett"
+  },
+  {
+    "speciesId": "ducklett_shadow"
+  },
+  {
+    "speciesId": "dudunsparce"
+  },
+  {
+    "speciesId": "dudunsparce_three"
+  },
+  {
+    "speciesId": "dudunsparce_two"
+  },
+  {
+    "speciesId": "dugtrio"
+  },
+  {
+    "speciesId": "dugtrio_alolan"
+  },
+  {
+    "speciesId": "dugtrio_alolan_shadow"
+  },
+  {
+    "speciesId": "dugtrio_shadow"
+  },
+  {
+    "speciesId": "dunsparce"
+  },
+  {
+    "speciesId": "duosion"
+  },
+  {
+    "speciesId": "duosion_shadow"
+  },
+  {
+    "speciesId": "duraludon"
+  },
+  {
+    "speciesId": "durant"
+  },
+  {
+    "speciesId": "dusclops"
+  },
+  {
+    "speciesId": "dusclops_shadow"
+  },
+  {
+    "speciesId": "dusknoir"
+  },
+  {
+    "speciesId": "dusknoir_shadow"
+  },
+  {
+    "speciesId": "duskull"
+  },
+  {
+    "speciesId": "duskull_shadow"
+  },
+  {
+    "speciesId": "dustox"
+  },
+  {
+    "speciesId": "dwebble"
+  },
+  {
+    "speciesId": "dwebble_shadow"
+  },
+  {
+    "speciesId": "eelektrik"
+  },
+  {
+    "speciesId": "eelektross"
+  },
+  {
+    "speciesId": "eevee"
+  },
+  {
+    "speciesId": "eiscue"
+  },
+  {
+    "speciesId": "eiscue_ice"
+  },
+  {
+    "speciesId": "eiscue_noice"
+  },
+  {
+    "speciesId": "ekans"
+  },
+  {
+    "speciesId": "ekans_shadow"
+  },
+  {
+    "speciesId": "eldegoss"
+  },
+  {
+    "speciesId": "electabuzz"
+  },
+  {
+    "speciesId": "electabuzz_shadow"
+  },
+  {
+    "speciesId": "electivire"
+  },
+  {
+    "speciesId": "electivire_shadow"
+  },
+  {
+    "speciesId": "electrike"
+  },
+  {
+    "speciesId": "electrike_shadow"
+  },
+  {
+    "speciesId": "electrode"
+  },
+  {
+    "speciesId": "electrode_hisuian"
+  },
+  {
+    "speciesId": "electrode_shadow"
+  },
+  {
+    "speciesId": "elekid"
+  },
+  {
+    "speciesId": "elgyem"
+  },
+  {
+    "speciesId": "emboar"
+  },
+  {
+    "speciesId": "emboar_shadow"
+  },
+  {
+    "speciesId": "emolga"
+  },
+  {
+    "speciesId": "empoleon"
+  },
+  {
+    "speciesId": "empoleon_shadow"
+  },
+  {
+    "speciesId": "enamorus_incarnate"
+  },
+  {
+    "speciesId": "enamorus_therian"
+  },
+  {
+    "speciesId": "entei"
+  },
+  {
+    "speciesId": "entei_shadow"
+  },
+  {
+    "speciesId": "escavalier"
+  },
+  {
+    "speciesId": "escavalier_shadow"
+  },
+  {
+    "speciesId": "espathra"
+  },
+  {
+    "speciesId": "espeon"
+  },
+  {
+    "speciesId": "espurr"
+  },
+  {
+    "speciesId": "eternatus"
+  },
+  {
+    "speciesId": "eternatus_eternamax"
+  },
+  {
+    "speciesId": "excadrill"
+  },
+  {
+    "speciesId": "excadrill_shadow"
+  },
+  {
+    "speciesId": "exeggcute"
+  },
+  {
+    "speciesId": "exeggcute_shadow"
+  },
+  {
+    "speciesId": "exeggutor"
+  },
+  {
+    "speciesId": "exeggutor_alolan"
+  },
+  {
+    "speciesId": "exeggutor_alolan_shadow"
+  },
+  {
+    "speciesId": "exeggutor_shadow"
+  },
+  {
+    "speciesId": "exploud"
+  },
+  {
+    "speciesId": "exploud_shadow"
+  },
+  {
+    "speciesId": "falinks"
+  },
+  {
+    "speciesId": "farfetchd"
+  },
+  {
+    "speciesId": "farfetchd_galarian"
+  },
+  {
+    "speciesId": "farigiraf"
+  },
+  {
+    "speciesId": "fearow"
+  },
+  {
+    "speciesId": "feebas"
+  },
+  {
+    "speciesId": "fennekin"
+  },
+  {
+    "speciesId": "feraligatr"
+  },
+  {
+    "speciesId": "feraligatr_shadow"
+  },
+  {
+    "speciesId": "ferroseed"
+  },
+  {
+    "speciesId": "ferroseed_shadow"
+  },
+  {
+    "speciesId": "ferrothorn"
+  },
+  {
+    "speciesId": "ferrothorn_shadow"
+  },
+  {
+    "speciesId": "fidough"
+  },
+  {
+    "speciesId": "finizen"
+  },
+  {
+    "speciesId": "finneon"
+  },
+  {
+    "speciesId": "flaaffy"
+  },
+  {
+    "speciesId": "flaaffy_shadow"
+  },
+  {
+    "speciesId": "flabebe"
+  },
+  {
+    "speciesId": "flamigo"
+  },
+  {
+    "speciesId": "flapple"
+  },
+  {
+    "speciesId": "flareon"
+  },
+  {
+    "speciesId": "fletchinder"
+  },
+  {
+    "speciesId": "fletchling"
+  },
+  {
+    "speciesId": "flittle"
+  },
+  {
+    "speciesId": "floatzel"
+  },
+  {
+    "speciesId": "floette"
+  },
+  {
+    "speciesId": "floragato"
   },
   {
     "speciesId": "florges",
     "fastMove": "FAIRY_WIND",
-    "chargedMoves": [ "TRAILBLAZE", "MOONBLAST" ]
+    "chargedMoves": [
+      "TRAILBLAZE",
+      "MOONBLAST"
+    ]
+  },
+  {
+    "speciesId": "fluttermane"
+  },
+  {
+    "speciesId": "flygon"
+  },
+  {
+    "speciesId": "flygon_shadow"
+  },
+  {
+    "speciesId": "fomantis"
+  },
+  {
+    "speciesId": "foongus"
+  },
+  {
+    "speciesId": "foongus_shadow"
+  },
+  {
+    "speciesId": "forretress"
+  },
+  {
+    "speciesId": "forretress_shadow"
+  },
+  {
+    "speciesId": "fraxure"
+  },
+  {
+    "speciesId": "frigibax"
+  },
+  {
+    "speciesId": "frillish"
+  },
+  {
+    "speciesId": "froakie"
+  },
+  {
+    "speciesId": "frogadier"
+  },
+  {
+    "speciesId": "froslass"
+  },
+  {
+    "speciesId": "froslass_shadow"
+  },
+  {
+    "speciesId": "frosmoth"
+  },
+  {
+    "speciesId": "fuecoco"
+  },
+  {
+    "speciesId": "furfrou"
+  },
+  {
+    "speciesId": "furret"
+  },
+  {
+    "speciesId": "gabite"
+  },
+  {
+    "speciesId": "gabite_shadow"
+  },
+  {
+    "speciesId": "gallade"
+  },
+  {
+    "speciesId": "gallade_mega"
+  },
+  {
+    "speciesId": "gallade_shadow"
+  },
+  {
+    "speciesId": "galvantula"
+  },
+  {
+    "speciesId": "galvantula_shadow"
+  },
+  {
+    "speciesId": "garbodor"
+  },
+  {
+    "speciesId": "garbodor_shadow"
+  },
+  {
+    "speciesId": "garchomp"
+  },
+  {
+    "speciesId": "garchomp_mega"
+  },
+  {
+    "speciesId": "garchomp_shadow"
+  },
+  {
+    "speciesId": "gardevoir"
+  },
+  {
+    "speciesId": "gardevoir_mega"
+  },
+  {
+    "speciesId": "gardevoir_shadow"
+  },
+  {
+    "speciesId": "garganacl"
+  },
+  {
+    "speciesId": "gastly"
+  },
+  {
+    "speciesId": "gastly_shadow"
+  },
+  {
+    "speciesId": "gastrodon"
+  },
+  {
+    "speciesId": "genesect"
+  },
+  {
+    "speciesId": "genesect_burn"
+  },
+  {
+    "speciesId": "genesect_chill"
+  },
+  {
+    "speciesId": "genesect_douse"
+  },
+  {
+    "speciesId": "genesect_shock"
+  },
+  {
+    "speciesId": "gengar"
+  },
+  {
+    "speciesId": "gengar_mega"
+  },
+  {
+    "speciesId": "gengar_shadow"
+  },
+  {
+    "speciesId": "geodude"
+  },
+  {
+    "speciesId": "geodude_alolan"
+  },
+  {
+    "speciesId": "geodude_alolan_shadow"
+  },
+  {
+    "speciesId": "geodude_shadow"
+  },
+  {
+    "speciesId": "gholdengo"
+  },
+  {
+    "speciesId": "gible"
+  },
+  {
+    "speciesId": "gible_shadow"
+  },
+  {
+    "speciesId": "gigalith"
+  },
+  {
+    "speciesId": "gigalith_shadow"
+  },
+  {
+    "speciesId": "gimmighoul"
+  },
+  {
+    "speciesId": "girafarig"
+  },
+  {
+    "speciesId": "girafarig_shadow"
+  },
+  {
+    "speciesId": "giratina_altered"
+  },
+  {
+    "speciesId": "giratina_origin"
+  },
+  {
+    "speciesId": "glaceon"
+  },
+  {
+    "speciesId": "glalie"
+  },
+  {
+    "speciesId": "glalie_mega"
+  },
+  {
+    "speciesId": "glalie_shadow"
+  },
+  {
+    "speciesId": "glameow"
+  },
+  {
+    "speciesId": "glameow_shadow"
+  },
+  {
+    "speciesId": "glastrier"
+  },
+  {
+    "speciesId": "gligar"
+  },
+  {
+    "speciesId": "gligar_shadow"
+  },
+  {
+    "speciesId": "glimmet"
+  },
+  {
+    "speciesId": "glimmora"
+  },
+  {
+    "speciesId": "gliscor"
+  },
+  {
+    "speciesId": "gliscor_shadow"
+  },
+  {
+    "speciesId": "gloom"
+  },
+  {
+    "speciesId": "gloom_shadow"
+  },
+  {
+    "speciesId": "gogoat"
+  },
+  {
+    "speciesId": "golbat"
+  },
+  {
+    "speciesId": "golbat_shadow"
+  },
+  {
+    "speciesId": "goldeen"
+  },
+  {
+    "speciesId": "golduck"
+  },
+  {
+    "speciesId": "golduck_shadow"
+  },
+  {
+    "speciesId": "golem"
+  },
+  {
+    "speciesId": "golem_alolan"
+  },
+  {
+    "speciesId": "golem_alolan_shadow"
+  },
+  {
+    "speciesId": "golem_shadow"
+  },
+  {
+    "speciesId": "golett"
+  },
+  {
+    "speciesId": "golett_shadow"
+  },
+  {
+    "speciesId": "golisopod"
+  },
+  {
+    "speciesId": "golisopodsh"
+  },
+  {
+    "speciesId": "golurk"
+  },
+  {
+    "speciesId": "golurk_shadow"
+  },
+  {
+    "speciesId": "goodra"
+  },
+  {
+    "speciesId": "goomy"
+  },
+  {
+    "speciesId": "gorebyss"
+  },
+  {
+    "speciesId": "gossifleur"
+  },
+  {
+    "speciesId": "gothita"
+  },
+  {
+    "speciesId": "gothita_shadow"
+  },
+  {
+    "speciesId": "gothitelle"
+  },
+  {
+    "speciesId": "gothitelle_shadow"
+  },
+  {
+    "speciesId": "gothorita"
+  },
+  {
+    "speciesId": "gothorita_shadow"
+  },
+  {
+    "speciesId": "gourgeist_average"
+  },
+  {
+    "speciesId": "gourgeist_large"
+  },
+  {
+    "speciesId": "gourgeist_small"
+  },
+  {
+    "speciesId": "gourgeist_super"
+  },
+  {
+    "speciesId": "grafaiai"
+  },
+  {
+    "speciesId": "granbull"
+  },
+  {
+    "speciesId": "granbull_shadow"
+  },
+  {
+    "speciesId": "grapploct"
+  },
+  {
+    "speciesId": "graveler"
+  },
+  {
+    "speciesId": "graveler_alolan"
+  },
+  {
+    "speciesId": "graveler_alolan_shadow"
+  },
+  {
+    "speciesId": "graveler_shadow"
+  },
+  {
+    "speciesId": "greattusk"
+  },
+  {
+    "speciesId": "greavard"
+  },
+  {
+    "speciesId": "greedent"
+  },
+  {
+    "speciesId": "greninja"
+  },
+  {
+    "speciesId": "grimer"
+  },
+  {
+    "speciesId": "grimer_alolan"
+  },
+  {
+    "speciesId": "grimer_alolan_shadow"
+  },
+  {
+    "speciesId": "grimer_shadow"
+  },
+  {
+    "speciesId": "grimmsnarl"
+  },
+  {
+    "speciesId": "grookey"
+  },
+  {
+    "speciesId": "grotle"
+  },
+  {
+    "speciesId": "grotle_shadow"
   },
   {
     "speciesId": "groudon",
     "fastMove": "MUD_SHOT",
-    "chargedMoves": [ "PRECIPICE_BLADES", "FIRE_PUNCH" ]
+    "chargedMoves": [
+      "PRECIPICE_BLADES",
+      "FIRE_PUNCH"
+    ]
+  },
+  {
+    "speciesId": "groudon_primal"
+  },
+  {
+    "speciesId": "groudon_shadow"
+  },
+  {
+    "speciesId": "grovyle"
+  },
+  {
+    "speciesId": "grovyle_shadow"
+  },
+  {
+    "speciesId": "growlithe"
+  },
+  {
+    "speciesId": "growlithe_hisuian"
+  },
+  {
+    "speciesId": "growlithe_shadow"
+  },
+  {
+    "speciesId": "grubbin"
+  },
+  {
+    "speciesId": "grumpig"
+  },
+  {
+    "speciesId": "grumpig_shadow"
+  },
+  {
+    "speciesId": "gulpin"
+  },
+  {
+    "speciesId": "gumshoos"
+  },
+  {
+    "speciesId": "gurdurr"
+  },
+  {
+    "speciesId": "gurdurr_shadow"
+  },
+  {
+    "speciesId": "guzzlord"
+  },
+  {
+    "speciesId": "gyarados"
+  },
+  {
+    "speciesId": "gyarados_mega"
+  },
+  {
+    "speciesId": "gyarados_shadow"
+  },
+  {
+    "speciesId": "hakamo_o"
+  },
+  {
+    "speciesId": "happiny"
+  },
+  {
+    "speciesId": "hariyama"
+  },
+  {
+    "speciesId": "hariyama_shadow"
+  },
+  {
+    "speciesId": "hatenna"
+  },
+  {
+    "speciesId": "hatterene"
+  },
+  {
+    "speciesId": "hattrem"
+  },
+  {
+    "speciesId": "haunter"
+  },
+  {
+    "speciesId": "haunter_shadow"
+  },
+  {
+    "speciesId": "hawlucha"
+  },
+  {
+    "speciesId": "haxorus"
+  },
+  {
+    "speciesId": "heatmor"
+  },
+  {
+    "speciesId": "heatran"
+  },
+  {
+    "speciesId": "heatran_shadow"
+  },
+  {
+    "speciesId": "heliolisk"
+  },
+  {
+    "speciesId": "helioptile"
+  },
+  {
+    "speciesId": "heracross"
+  },
+  {
+    "speciesId": "heracross_mega"
+  },
+  {
+    "speciesId": "herdier"
+  },
+  {
+    "speciesId": "hippopotas"
+  },
+  {
+    "speciesId": "hippopotas_shadow"
+  },
+  {
+    "speciesId": "hippowdon"
+  },
+  {
+    "speciesId": "hippowdon_shadow"
+  },
+  {
+    "speciesId": "hitmonchan"
+  },
+  {
+    "speciesId": "hitmonchan_shadow"
+  },
+  {
+    "speciesId": "hitmonlee"
+  },
+  {
+    "speciesId": "hitmonlee_shadow"
+  },
+  {
+    "speciesId": "hitmontop"
+  },
+  {
+    "speciesId": "hitmontop_shadow"
   },
   {
     "speciesId": "ho_oh",
     "fastMove": "INCINERATE",
-    "chargedMoves": [ "SACRED_FIRE", "BRAVE_BIRD" ]
+    "chargedMoves": [
+      "SACRED_FIRE",
+      "BRAVE_BIRD"
+    ]
+  },
+  {
+    "speciesId": "ho_oh_shadow"
+  },
+  {
+    "speciesId": "honchkrow"
+  },
+  {
+    "speciesId": "honchkrow_shadow"
+  },
+  {
+    "speciesId": "honedge"
+  },
+  {
+    "speciesId": "hoopa"
+  },
+  {
+    "speciesId": "hoopa_confined"
+  },
+  {
+    "speciesId": "hoopa_unbound"
+  },
+  {
+    "speciesId": "hoothoot"
+  },
+  {
+    "speciesId": "hoppip"
+  },
+  {
+    "speciesId": "hoppip_shadow"
+  },
+  {
+    "speciesId": "horsea"
+  },
+  {
+    "speciesId": "horsea_shadow"
+  },
+  {
+    "speciesId": "houndoom"
+  },
+  {
+    "speciesId": "houndoom_mega"
+  },
+  {
+    "speciesId": "houndoom_shadow"
+  },
+  {
+    "speciesId": "houndour"
+  },
+  {
+    "speciesId": "houndour_shadow"
+  },
+  {
+    "speciesId": "houndstone"
+  },
+  {
+    "speciesId": "huntail"
+  },
+  {
+    "speciesId": "hydreigon"
+  },
+  {
+    "speciesId": "hypno"
+  },
+  {
+    "speciesId": "hypno_shadow"
+  },
+  {
+    "speciesId": "igglybuff"
+  },
+  {
+    "speciesId": "illumise"
+  },
+  {
+    "speciesId": "impidimp"
+  },
+  {
+    "speciesId": "incineroar"
+  },
+  {
+    "speciesId": "indeedee"
+  },
+  {
+    "speciesId": "indeedee_female"
+  },
+  {
+    "speciesId": "indeedee_male"
+  },
+  {
+    "speciesId": "infernape"
+  },
+  {
+    "speciesId": "infernape_shadow"
+  },
+  {
+    "speciesId": "inkay"
+  },
+  {
+    "speciesId": "inkay_shadow"
+  },
+  {
+    "speciesId": "inteleon"
+  },
+  {
+    "speciesId": "ironbundle"
+  },
+  {
+    "speciesId": "ironhands"
+  },
+  {
+    "speciesId": "ironjugulis"
+  },
+  {
+    "speciesId": "ironmoth"
+  },
+  {
+    "speciesId": "ironthorns"
+  },
+  {
+    "speciesId": "irontreads"
+  },
+  {
+    "speciesId": "ironvaliant"
+  },
+  {
+    "speciesId": "ivysaur"
+  },
+  {
+    "speciesId": "ivysaur_shadow"
+  },
+  {
+    "speciesId": "jangmo_o"
+  },
+  {
+    "speciesId": "jellicent"
+  },
+  {
+    "speciesId": "jigglypuff"
+  },
+  {
+    "speciesId": "jirachi"
+  },
+  {
+    "speciesId": "jolteon"
+  },
+  {
+    "speciesId": "joltik"
+  },
+  {
+    "speciesId": "joltik_shadow"
+  },
+  {
+    "speciesId": "jumpluff"
+  },
+  {
+    "speciesId": "jumpluff_shadow"
+  },
+  {
+    "speciesId": "jynx"
+  },
+  {
+    "speciesId": "kabuto"
+  },
+  {
+    "speciesId": "kabutops"
+  },
+  {
+    "speciesId": "kadabra"
+  },
+  {
+    "speciesId": "kadabra_shadow"
+  },
+  {
+    "speciesId": "kakuna"
+  },
+  {
+    "speciesId": "kakuna_shadow"
+  },
+  {
+    "speciesId": "kangaskhan"
+  },
+  {
+    "speciesId": "kangaskhan_mega"
+  },
+  {
+    "speciesId": "karrablast"
+  },
+  {
+    "speciesId": "karrablast_shadow"
+  },
+  {
+    "speciesId": "kartana"
+  },
+  {
+    "speciesId": "kecleon"
+  },
+  {
+    "speciesId": "keldeo_ordinary"
+  },
+  {
+    "speciesId": "keldeo_resolute"
+  },
+  {
+    "speciesId": "kilowattrel"
+  },
+  {
+    "speciesId": "kingambit"
+  },
+  {
+    "speciesId": "kingdra"
+  },
+  {
+    "speciesId": "kingdra_shadow"
+  },
+  {
+    "speciesId": "kingler"
+  },
+  {
+    "speciesId": "kirlia"
+  },
+  {
+    "speciesId": "kirlia_shadow"
+  },
+  {
+    "speciesId": "klang"
+  },
+  {
+    "speciesId": "klawf"
+  },
+  {
+    "speciesId": "kleavor"
+  },
+  {
+    "speciesId": "klefki"
+  },
+  {
+    "speciesId": "klink"
+  },
+  {
+    "speciesId": "klinklang"
+  },
+  {
+    "speciesId": "koffing"
+  },
+  {
+    "speciesId": "koffing_shadow"
+  },
+  {
+    "speciesId": "komala"
+  },
+  {
+    "speciesId": "kommo_o"
+  },
+  {
+    "speciesId": "koraidon"
+  },
+  {
+    "speciesId": "koraidon_apex"
+  },
+  {
+    "speciesId": "krabby"
+  },
+  {
+    "speciesId": "kricketot"
+  },
+  {
+    "speciesId": "kricketune"
+  },
+  {
+    "speciesId": "krokorok"
+  },
+  {
+    "speciesId": "krookodile"
+  },
+  {
+    "speciesId": "kubfu"
   },
   {
     "speciesId": "kyogre",
     "fastMove": "WATERFALL",
-    "chargedMoves": [ "SURF", "ORIGIN_PULSE" ]
+    "chargedMoves": [
+      "SURF",
+      "ORIGIN_PULSE"
+    ]
+  },
+  {
+    "speciesId": "kyogre_primal"
+  },
+  {
+    "speciesId": "kyogre_shadow"
+  },
+  {
+    "speciesId": "kyurem"
   },
   {
     "speciesId": "kyurem_black",
     "fastMove": "SHADOW_CLAW",
-    "chargedMoves": [ "FREEZE_SHOCK", "FUSION_BOLT" ]
+    "chargedMoves": [
+      "FREEZE_SHOCK",
+      "FUSION_BOLT"
+    ]
   },
   {
     "speciesId": "kyurem_white",
     "fastMove": "ICE_FANG",
-    "chargedMoves": [ "FUSION_FLARE", "ICE_BURN" ]
+    "chargedMoves": [
+      "FUSION_FLARE",
+      "ICE_BURN"
+    ]
+  },
+  {
+    "speciesId": "lairon"
+  },
+  {
+    "speciesId": "lairon_shadow"
+  },
+  {
+    "speciesId": "lampent"
+  },
+  {
+    "speciesId": "lampent_shadow"
+  },
+  {
+    "speciesId": "landorus_incarnate"
   },
   {
     "speciesId": "landorus_therian",
     "fastMove": "MUD_SHOT",
-    "chargedMoves": [ "SANDSEAR_STORM", "STONE_EDGE" ]
+    "chargedMoves": [
+      "SANDSEAR_STORM",
+      "STONE_EDGE"
+    ]
+  },
+  {
+    "speciesId": "lanturn"
+  },
+  {
+    "speciesId": "lanturnw"
+  },
+  {
+    "speciesId": "lapras"
+  },
+  {
+    "speciesId": "lapras_shadow"
+  },
+  {
+    "speciesId": "larvesta"
+  },
+  {
+    "speciesId": "larvitar"
+  },
+  {
+    "speciesId": "larvitar_shadow"
+  },
+  {
+    "speciesId": "latias"
+  },
+  {
+    "speciesId": "latias_mega"
+  },
+  {
+    "speciesId": "latias_shadow"
+  },
+  {
+    "speciesId": "latios"
+  },
+  {
+    "speciesId": "latios_mega"
+  },
+  {
+    "speciesId": "latios_shadow"
+  },
+  {
+    "speciesId": "leafeon"
+  },
+  {
+    "speciesId": "leavanny"
+  },
+  {
+    "speciesId": "lechonk"
+  },
+  {
+    "speciesId": "ledian"
+  },
+  {
+    "speciesId": "ledian_shadow"
+  },
+  {
+    "speciesId": "ledyba"
+  },
+  {
+    "speciesId": "ledyba_shadow"
+  },
+  {
+    "speciesId": "lickilicky"
+  },
+  {
+    "speciesId": "lickitung"
+  },
+  {
+    "speciesId": "liepard"
+  },
+  {
+    "speciesId": "liepard_shadow"
+  },
+  {
+    "speciesId": "lileep"
+  },
+  {
+    "speciesId": "lileep_shadow"
+  },
+  {
+    "speciesId": "lilligant"
+  },
+  {
+    "speciesId": "lilligant_hisuian"
+  },
+  {
+    "speciesId": "lillipup"
+  },
+  {
+    "speciesId": "linoone"
+  },
+  {
+    "speciesId": "linoone_galarian"
+  },
+  {
+    "speciesId": "linoone_galarian_shadow"
+  },
+  {
+    "speciesId": "litleo"
+  },
+  {
+    "speciesId": "litten"
+  },
+  {
+    "speciesId": "litwick"
+  },
+  {
+    "speciesId": "litwick_shadow"
+  },
+  {
+    "speciesId": "lokix"
+  },
+  {
+    "speciesId": "lombre"
+  },
+  {
+    "speciesId": "lopunny"
+  },
+  {
+    "speciesId": "lopunny_mega"
+  },
+  {
+    "speciesId": "lotad"
+  },
+  {
+    "speciesId": "loudred"
+  },
+  {
+    "speciesId": "loudred_shadow"
+  },
+  {
+    "speciesId": "lucario"
+  },
+  {
+    "speciesId": "lucario_mega"
+  },
+  {
+    "speciesId": "ludicolo"
+  },
+  {
+    "speciesId": "lugia"
+  },
+  {
+    "speciesId": "lugia_shadow"
+  },
+  {
+    "speciesId": "lumineon"
   },
   {
     "speciesId": "lunala",
     "fastMove": "SHADOW_CLAW",
-    "chargedMoves": [ "SHADOW_BALL", "MOONBLAST" ]
+    "chargedMoves": [
+      "SHADOW_BALL",
+      "MOONBLAST"
+    ]
+  },
+  {
+    "speciesId": "lunatone"
+  },
+  {
+    "speciesId": "lurantis"
+  },
+  {
+    "speciesId": "luvdisc"
+  },
+  {
+    "speciesId": "luxio"
+  },
+  {
+    "speciesId": "luxio_shadow"
+  },
+  {
+    "speciesId": "luxray"
+  },
+  {
+    "speciesId": "luxray_shadow"
+  },
+  {
+    "speciesId": "lycanroc_dusk"
+  },
+  {
+    "speciesId": "lycanroc_midday"
+  },
+  {
+    "speciesId": "lycanroc_midnight"
+  },
+  {
+    "speciesId": "mabosstiff"
+  },
+  {
+    "speciesId": "machamp"
+  },
+  {
+    "speciesId": "machamp_shadow"
+  },
+  {
+    "speciesId": "machoke"
+  },
+  {
+    "speciesId": "machoke_shadow"
+  },
+  {
+    "speciesId": "machop"
+  },
+  {
+    "speciesId": "machop_shadow"
+  },
+  {
+    "speciesId": "magby"
+  },
+  {
+    "speciesId": "magcargo"
+  },
+  {
+    "speciesId": "magearna"
+  },
+  {
+    "speciesId": "magikarp"
+  },
+  {
+    "speciesId": "magikarp_shadow"
+  },
+  {
+    "speciesId": "magmar"
+  },
+  {
+    "speciesId": "magmar_shadow"
+  },
+  {
+    "speciesId": "magmortar"
+  },
+  {
+    "speciesId": "magmortar_shadow"
+  },
+  {
+    "speciesId": "magnemite"
+  },
+  {
+    "speciesId": "magnemite_shadow"
+  },
+  {
+    "speciesId": "magneton"
+  },
+  {
+    "speciesId": "magneton_shadow"
+  },
+  {
+    "speciesId": "magnezone"
+  },
+  {
+    "speciesId": "magnezone_shadow"
+  },
+  {
+    "speciesId": "makuhita"
+  },
+  {
+    "speciesId": "makuhita_shadow"
+  },
+  {
+    "speciesId": "malamar"
+  },
+  {
+    "speciesId": "malamar_shadow"
+  },
+  {
+    "speciesId": "mamoswine"
+  },
+  {
+    "speciesId": "mamoswine_shadow"
+  },
+  {
+    "speciesId": "manaphy"
+  },
+  {
+    "speciesId": "mandibuzz"
+  },
+  {
+    "speciesId": "manectric"
+  },
+  {
+    "speciesId": "manectric_mega"
+  },
+  {
+    "speciesId": "manectric_shadow"
+  },
+  {
+    "speciesId": "mankey"
+  },
+  {
+    "speciesId": "mankey_shadow"
+  },
+  {
+    "speciesId": "mantine"
+  },
+  {
+    "speciesId": "mantyke"
+  },
+  {
+    "speciesId": "maractus"
+  },
+  {
+    "speciesId": "mareanie"
+  },
+  {
+    "speciesId": "mareep"
+  },
+  {
+    "speciesId": "mareep_shadow"
+  },
+  {
+    "speciesId": "marill"
+  },
+  {
+    "speciesId": "marowak"
+  },
+  {
+    "speciesId": "marowak_alolan"
+  },
+  {
+    "speciesId": "marowak_alolan_shadow"
+  },
+  {
+    "speciesId": "marowak_shadow"
+  },
+  {
+    "speciesId": "marshadow"
+  },
+  {
+    "speciesId": "marshtomp"
+  },
+  {
+    "speciesId": "marshtomp_shadow"
+  },
+  {
+    "speciesId": "maschiff"
+  },
+  {
+    "speciesId": "masquerain"
+  },
+  {
+    "speciesId": "maushold"
+  },
+  {
+    "speciesId": "maushold_family_of_four"
+  },
+  {
+    "speciesId": "maushold_family_of_three"
+  },
+  {
+    "speciesId": "mawile"
+  },
+  {
+    "speciesId": "mawile_mega"
+  },
+  {
+    "speciesId": "mawile_shadow"
+  },
+  {
+    "speciesId": "medicham"
+  },
+  {
+    "speciesId": "medicham_mega"
+  },
+  {
+    "speciesId": "meditite"
+  },
+  {
+    "speciesId": "meganium"
+  },
+  {
+    "speciesId": "meganium_shadow"
   },
   {
     "speciesId": "melmetal",
     "fastMove": "THUNDER_SHOCK",
-    "chargedMoves": [ "DOUBLE_IRON_BASH", "THUNDERBOLT" ]
+    "chargedMoves": [
+      "DOUBLE_IRON_BASH",
+      "THUNDERBOLT"
+    ]
+  },
+  {
+    "speciesId": "meloetta_aria"
+  },
+  {
+    "speciesId": "meloetta_pirouette"
+  },
+  {
+    "speciesId": "meltan"
+  },
+  {
+    "speciesId": "meowscarada"
+  },
+  {
+    "speciesId": "meowstic"
+  },
+  {
+    "speciesId": "meowstic_female"
+  },
+  {
+    "speciesId": "meowth"
+  },
+  {
+    "speciesId": "meowth_alolan"
+  },
+  {
+    "speciesId": "meowth_galarian"
+  },
+  {
+    "speciesId": "meowth_shadow"
+  },
+  {
+    "speciesId": "mesprit"
   },
   {
     "speciesId": "metagross",
     "fastMove": "BULLET_PUNCH",
-    "chargedMoves": [ "METEOR_MASH", "EARTHQUAKE" ]
+    "chargedMoves": [
+      "METEOR_MASH",
+      "EARTHQUAKE"
+    ]
+  },
+  {
+    "speciesId": "metagross_shadow"
+  },
+  {
+    "speciesId": "metang"
+  },
+  {
+    "speciesId": "metang_shadow"
+  },
+  {
+    "speciesId": "metapod"
+  },
+  {
+    "speciesId": "metapod_shadow"
+  },
+  {
+    "speciesId": "mew"
   },
   {
     "speciesId": "mewtwo",
     "fastMove": "PSYCHO_CUT",
-    "chargedMoves": [ "SHADOW_BALL", "PSYSTRIKE" ]
+    "chargedMoves": [
+      "SHADOW_BALL",
+      "PSYSTRIKE"
+    ]
+  },
+  {
+    "speciesId": "mewtwo_armored"
+  },
+  {
+    "speciesId": "mewtwo_shadow"
+  },
+  {
+    "speciesId": "mienfoo"
+  },
+  {
+    "speciesId": "mienshao"
+  },
+  {
+    "speciesId": "mightyena"
+  },
+  {
+    "speciesId": "mightyena_shadow"
+  },
+  {
+    "speciesId": "milcery"
+  },
+  {
+    "speciesId": "milotic"
+  },
+  {
+    "speciesId": "miltank"
+  },
+  {
+    "speciesId": "mime_jr"
+  },
+  {
+    "speciesId": "mimikyu"
+  },
+  {
+    "speciesId": "minccino"
+  },
+  {
+    "speciesId": "minior_core"
+  },
+  {
+    "speciesId": "minior_meteor"
+  },
+  {
+    "speciesId": "minun"
+  },
+  {
+    "speciesId": "miraidon"
+  },
+  {
+    "speciesId": "miraidon_ultimate"
+  },
+  {
+    "speciesId": "misdreavus"
+  },
+  {
+    "speciesId": "misdreavus_shadow"
+  },
+  {
+    "speciesId": "mismagius"
+  },
+  {
+    "speciesId": "mismagius_shadow"
+  },
+  {
+    "speciesId": "moltres"
+  },
+  {
+    "speciesId": "moltres_galarian"
+  },
+  {
+    "speciesId": "moltres_shadow"
+  },
+  {
+    "speciesId": "monferno"
+  },
+  {
+    "speciesId": "monferno_shadow"
+  },
+  {
+    "speciesId": "morelull"
+  },
+  {
+    "speciesId": "morgrem"
+  },
+  {
+    "speciesId": "morpeko_full_belly"
+  },
+  {
+    "speciesId": "morpeko_hangry"
+  },
+  {
+    "speciesId": "mothim"
+  },
+  {
+    "speciesId": "mr_mime"
+  },
+  {
+    "speciesId": "mr_mime_galarian"
+  },
+  {
+    "speciesId": "mr_rime"
+  },
+  {
+    "speciesId": "mudbray"
+  },
+  {
+    "speciesId": "mudkip"
+  },
+  {
+    "speciesId": "mudkip_shadow"
+  },
+  {
+    "speciesId": "mudsdale"
+  },
+  {
+    "speciesId": "muk"
+  },
+  {
+    "speciesId": "muk_alolan"
+  },
+  {
+    "speciesId": "muk_alolan_shadow"
+  },
+  {
+    "speciesId": "muk_shadow"
+  },
+  {
+    "speciesId": "munchlax"
+  },
+  {
+    "speciesId": "munna"
+  },
+  {
+    "speciesId": "murkrow"
+  },
+  {
+    "speciesId": "murkrow_shadow"
+  },
+  {
+    "speciesId": "musharna"
+  },
+  {
+    "speciesId": "nacli"
+  },
+  {
+    "speciesId": "naclstack"
+  },
+  {
+    "speciesId": "naganadel"
+  },
+  {
+    "speciesId": "natu"
+  },
+  {
+    "speciesId": "natu_shadow"
+  },
+  {
+    "speciesId": "necrozma"
   },
   {
     "speciesId": "necrozma_dawn_wings",
     "fastMove": "SHADOW_CLAW",
-    "chargedMoves": [ "DARK_PULSE", "MOONGEIST_BEAM" ]
+    "chargedMoves": [
+      "DARK_PULSE",
+      "MOONGEIST_BEAM"
+    ]
   },
   {
     "speciesId": "necrozma_dusk_mane",
     "fastMove": "SHADOW_CLAW",
-    "chargedMoves": [ "DARK_PULSE", "SUNSTEEL_STRIKE" ]
+    "chargedMoves": [
+      "DARK_PULSE",
+      "SUNSTEEL_STRIKE"
+    ]
+  },
+  {
+    "speciesId": "necrozma_ultra"
+  },
+  {
+    "speciesId": "nickit"
+  },
+  {
+    "speciesId": "nidoking"
+  },
+  {
+    "speciesId": "nidoking_shadow"
+  },
+  {
+    "speciesId": "nidoqueen"
+  },
+  {
+    "speciesId": "nidoqueen_shadow"
+  },
+  {
+    "speciesId": "nidoran_female"
+  },
+  {
+    "speciesId": "nidoran_female_shadow"
+  },
+  {
+    "speciesId": "nidoran_male"
+  },
+  {
+    "speciesId": "nidoran_male_shadow"
+  },
+  {
+    "speciesId": "nidorina"
+  },
+  {
+    "speciesId": "nidorina_shadow"
+  },
+  {
+    "speciesId": "nidorino"
+  },
+  {
+    "speciesId": "nidorino_shadow"
+  },
+  {
+    "speciesId": "nihilego"
+  },
+  {
+    "speciesId": "nincada"
+  },
+  {
+    "speciesId": "ninetales"
+  },
+  {
+    "speciesId": "ninetales_alolan"
+  },
+  {
+    "speciesId": "ninetales_alolan_shadow"
+  },
+  {
+    "speciesId": "ninetales_shadow"
+  },
+  {
+    "speciesId": "ninjask"
+  },
+  {
+    "speciesId": "noctowl"
+  },
+  {
+    "speciesId": "noibat"
+  },
+  {
+    "speciesId": "noivern"
+  },
+  {
+    "speciesId": "nosepass"
+  },
+  {
+    "speciesId": "nosepass_shadow"
+  },
+  {
+    "speciesId": "numel"
+  },
+  {
+    "speciesId": "numel_shadow"
+  },
+  {
+    "speciesId": "nuzleaf"
+  },
+  {
+    "speciesId": "nuzleaf_shadow"
+  },
+  {
+    "speciesId": "nymble"
+  },
+  {
+    "speciesId": "obstagoon"
+  },
+  {
+    "speciesId": "obstagoon_shadow"
+  },
+  {
+    "speciesId": "octillery"
+  },
+  {
+    "speciesId": "oddish"
+  },
+  {
+    "speciesId": "oddish_shadow"
+  },
+  {
+    "speciesId": "oinkologne"
+  },
+  {
+    "speciesId": "oinkologne_female"
+  },
+  {
+    "speciesId": "omanyte"
+  },
+  {
+    "speciesId": "omanyte_shadow"
+  },
+  {
+    "speciesId": "omastar"
+  },
+  {
+    "speciesId": "omastar_shadow"
+  },
+  {
+    "speciesId": "onix"
+  },
+  {
+    "speciesId": "onix_shadow"
+  },
+  {
+    "speciesId": "oranguru"
+  },
+  {
+    "speciesId": "orbeetle"
+  },
+  {
+    "speciesId": "oricorio_baile"
+  },
+  {
+    "speciesId": "oricorio_pau"
+  },
+  {
+    "speciesId": "oricorio_pom_pom"
+  },
+  {
+    "speciesId": "oricorio_sensu"
+  },
+  {
+    "speciesId": "orthworm"
+  },
+  {
+    "speciesId": "oshawott"
+  },
+  {
+    "speciesId": "oshawott_shadow"
+  },
+  {
+    "speciesId": "overqwil"
+  },
+  {
+    "speciesId": "pachirisu"
+  },
+  {
+    "speciesId": "palafin"
+  },
+  {
+    "speciesId": "palafin_hero"
+  },
+  {
+    "speciesId": "palafin_zero"
+  },
+  {
+    "speciesId": "palkia"
   },
   {
     "speciesId": "palkia_origin",
     "fastMove": "DRAGON_BREATH",
-    "chargedMoves": [ "AQUA_TAIL", "SPACIAL_REND" ]
+    "chargedMoves": [
+      "AQUA_TAIL",
+      "SPACIAL_REND"
+    ]
   },
   {
-    "speciesId": "primarina",
-    "fastMove": "CHARM",
-    "chargedMoves": [ "DISARMING_VOICE", "HYDRO_CANNON" ]
+    "speciesId": "palkia_shadow"
+  },
+  {
+    "speciesId": "palossand"
+  },
+  {
+    "speciesId": "palpitoad"
+  },
+  {
+    "speciesId": "pancham"
+  },
+  {
+    "speciesId": "pangoro"
+  },
+  {
+    "speciesId": "panpour"
+  },
+  {
+    "speciesId": "pansage"
+  },
+  {
+    "speciesId": "pansear"
+  },
+  {
+    "speciesId": "paras"
+  },
+  {
+    "speciesId": "parasect"
+  },
+  {
+    "speciesId": "passimian"
+  },
+  {
+    "speciesId": "patrat"
+  },
+  {
+    "speciesId": "patrat_shadow"
+  },
+  {
+    "speciesId": "pawmi"
+  },
+  {
+    "speciesId": "pawmo"
+  },
+  {
+    "speciesId": "pawmot"
+  },
+  {
+    "speciesId": "pawniard"
+  },
+  {
+    "speciesId": "pelipper"
+  },
+  {
+    "speciesId": "perrserker"
+  },
+  {
+    "speciesId": "persian"
+  },
+  {
+    "speciesId": "persian_alolan"
+  },
+  {
+    "speciesId": "persian_shadow"
+  },
+  {
+    "speciesId": "petilil"
+  },
+  {
+    "speciesId": "phanpy"
+  },
+  {
+    "speciesId": "phanpy_shadow"
+  },
+  {
+    "speciesId": "phantump"
+  },
+  {
+    "speciesId": "pheromosa"
+  },
+  {
+    "speciesId": "phione"
+  },
+  {
+    "speciesId": "pichu"
+  },
+  {
+    "speciesId": "pidgeot"
+  },
+  {
+    "speciesId": "pidgeot_mega"
+  },
+  {
+    "speciesId": "pidgeot_shadow"
+  },
+  {
+    "speciesId": "pidgeotto"
+  },
+  {
+    "speciesId": "pidgeotto_shadow"
+  },
+  {
+    "speciesId": "pidgey"
+  },
+  {
+    "speciesId": "pidgey_shadow"
+  },
+  {
+    "speciesId": "pidove"
+  },
+  {
+    "speciesId": "pidove_shadow"
+  },
+  {
+    "speciesId": "pignite"
+  },
+  {
+    "speciesId": "pignite_shadow"
+  },
+  {
+    "speciesId": "pikachu"
+  },
+  {
+    "speciesId": "pikachu_5th_anniversary"
+  },
+  {
+    "speciesId": "pikachu_flying"
+  },
+  {
+    "speciesId": "pikachu_horizons"
+  },
+  {
+    "speciesId": "pikachu_kariyushi"
+  },
+  {
+    "speciesId": "pikachu_libre"
+  },
+  {
+    "speciesId": "pikachu_pop_star"
+  },
+  {
+    "speciesId": "pikachu_rock_star"
+  },
+  {
+    "speciesId": "pikachu_shaymin"
+  },
+  {
+    "speciesId": "pikipek"
+  },
+  {
+    "speciesId": "piloswine"
+  },
+  {
+    "speciesId": "piloswine_shadow"
+  },
+  {
+    "speciesId": "pincurchin"
+  },
+  {
+    "speciesId": "pineco"
+  },
+  {
+    "speciesId": "pineco_shadow"
+  },
+  {
+    "speciesId": "pinsir"
+  },
+  {
+    "speciesId": "pinsir_mega"
+  },
+  {
+    "speciesId": "pinsir_shadow"
+  },
+  {
+    "speciesId": "piplup"
+  },
+  {
+    "speciesId": "piplup_shadow"
+  },
+  {
+    "speciesId": "plusle"
+  },
+  {
+    "speciesId": "poipole"
+  },
+  {
+    "speciesId": "politoed"
+  },
+  {
+    "speciesId": "politoed_shadow"
+  },
+  {
+    "speciesId": "poliwag"
+  },
+  {
+    "speciesId": "poliwag_shadow"
+  },
+  {
+    "speciesId": "poliwhirl"
+  },
+  {
+    "speciesId": "poliwhirl_shadow"
+  },
+  {
+    "speciesId": "poliwrath"
+  },
+  {
+    "speciesId": "poliwrath_shadow"
+  },
+  {
+    "speciesId": "polteageist"
+  },
+  {
+    "speciesId": "ponyta"
+  },
+  {
+    "speciesId": "ponyta_galarian"
+  },
+  {
+    "speciesId": "poochyena"
+  },
+  {
+    "speciesId": "poochyena_shadow"
+  },
+  {
+    "speciesId": "popplio"
+  },
+  {
+    "speciesId": "porygon"
+  },
+  {
+    "speciesId": "porygon_shadow"
+  },
+  {
+    "speciesId": "porygon_z"
+  },
+  {
+    "speciesId": "porygon_z_shadow"
+  },
+  {
+    "speciesId": "porygon2"
+  },
+  {
+    "speciesId": "porygon2_shadow"
   },
   {
     "speciesId": "primarina",
     "fastMove": "WATERFALL",
-    "chargedMoves": [ "DISARMING_VOICE", "HYDRO_CANNON" ]
+    "chargedMoves": [
+      "DISARMING_VOICE",
+      "HYDRO_CANNON"
+    ]
+  },
+  {
+    "speciesId": "primeape"
+  },
+  {
+    "speciesId": "primeape_shadow"
+  },
+  {
+    "speciesId": "prinplup"
+  },
+  {
+    "speciesId": "prinplup_shadow"
+  },
+  {
+    "speciesId": "probopass"
+  },
+  {
+    "speciesId": "probopass_shadow"
+  },
+  {
+    "speciesId": "psyduck"
+  },
+  {
+    "speciesId": "psyduck_shadow"
+  },
+  {
+    "speciesId": "pumpkaboo_average"
+  },
+  {
+    "speciesId": "pumpkaboo_large"
+  },
+  {
+    "speciesId": "pumpkaboo_small"
+  },
+  {
+    "speciesId": "pumpkaboo_super"
+  },
+  {
+    "speciesId": "pupitar"
+  },
+  {
+    "speciesId": "pupitar_shadow"
+  },
+  {
+    "speciesId": "purrloin"
+  },
+  {
+    "speciesId": "purrloin_shadow"
+  },
+  {
+    "speciesId": "purugly"
+  },
+  {
+    "speciesId": "purugly_shadow"
+  },
+  {
+    "speciesId": "pyroar"
+  },
+  {
+    "speciesId": "pyukumuku"
+  },
+  {
+    "speciesId": "quagsire"
+  },
+  {
+    "speciesId": "quagsire_shadow"
+  },
+  {
+    "speciesId": "quaquaval"
+  },
+  {
+    "speciesId": "quaxly"
+  },
+  {
+    "speciesId": "quaxwell"
+  },
+  {
+    "speciesId": "quilava"
+  },
+  {
+    "speciesId": "quilava_shadow"
+  },
+  {
+    "speciesId": "quilladin"
+  },
+  {
+    "speciesId": "qwilfish"
+  },
+  {
+    "speciesId": "qwilfish_hisuian"
+  },
+  {
+    "speciesId": "raboot"
+  },
+  {
+    "speciesId": "rabsca"
+  },
+  {
+    "speciesId": "raichu"
+  },
+  {
+    "speciesId": "raichu_alolan"
+  },
+  {
+    "speciesId": "raikou"
+  },
+  {
+    "speciesId": "raikou_shadow"
+  },
+  {
+    "speciesId": "ralts"
+  },
+  {
+    "speciesId": "ralts_shadow"
+  },
+  {
+    "speciesId": "rampardos"
+  },
+  {
+    "speciesId": "rampardos_shadow"
+  },
+  {
+    "speciesId": "rapidash"
+  },
+  {
+    "speciesId": "rapidash_galarian"
+  },
+  {
+    "speciesId": "raticate"
+  },
+  {
+    "speciesId": "raticate_alolan"
+  },
+  {
+    "speciesId": "raticate_alolan_shadow"
+  },
+  {
+    "speciesId": "raticate_shadow"
+  },
+  {
+    "speciesId": "rattata"
+  },
+  {
+    "speciesId": "rattata_alolan"
+  },
+  {
+    "speciesId": "rattata_alolan_shadow"
+  },
+  {
+    "speciesId": "rattata_shadow"
+  },
+  {
+    "speciesId": "rayquaza"
+  },
+  {
+    "speciesId": "rayquaza_mega"
+  },
+  {
+    "speciesId": "regice"
+  },
+  {
+    "speciesId": "regice_shadow"
+  },
+  {
+    "speciesId": "regidrago"
+  },
+  {
+    "speciesId": "regieleki"
+  },
+  {
+    "speciesId": "regigigas"
+  },
+  {
+    "speciesId": "regigigas_shadow"
+  },
+  {
+    "speciesId": "regirock"
+  },
+  {
+    "speciesId": "regirock_shadow"
+  },
+  {
+    "speciesId": "registeel"
+  },
+  {
+    "speciesId": "registeel_shadow"
+  },
+  {
+    "speciesId": "relicanth"
+  },
+  {
+    "speciesId": "rellor"
+  },
+  {
+    "speciesId": "remoraid"
+  },
+  {
+    "speciesId": "reshiram"
+  },
+  {
+    "speciesId": "reuniclus"
+  },
+  {
+    "speciesId": "reuniclus_shadow"
+  },
+  {
+    "speciesId": "revavroom"
+  },
+  {
+    "speciesId": "rhydon"
+  },
+  {
+    "speciesId": "rhydon_shadow"
+  },
+  {
+    "speciesId": "rhyhorn"
+  },
+  {
+    "speciesId": "rhyhorn_shadow"
   },
   {
     "speciesId": "rhyperior",
     "fastMove": "MUD_SLAP",
-    "chargedMoves": [ "BREAKING_SWIPE", "ROCK_WRECKER" ]
+    "chargedMoves": [
+      "BREAKING_SWIPE",
+      "ROCK_WRECKER"
+    ]
   },
   {
     "speciesId": "rhyperior_shadow",
     "fastMove": "MUD_SLAP",
-    "chargedMoves": [ "ROCK_WRECKER", "BREAKING_SWIPE" ],
+    "chargedMoves": [
+      "ROCK_WRECKER",
+      "BREAKING_SWIPE"
+    ],
     "shadowType": "shadow"
+  },
+  {
+    "speciesId": "ribombee"
+  },
+  {
+    "speciesId": "rillaboom"
+  },
+  {
+    "speciesId": "riolu"
+  },
+  {
+    "speciesId": "roaringmoon"
+  },
+  {
+    "speciesId": "rockruff"
+  },
+  {
+    "speciesId": "roggenrola"
+  },
+  {
+    "speciesId": "roggenrola_shadow"
+  },
+  {
+    "speciesId": "rolycoly"
+  },
+  {
+    "speciesId": "rookidee"
+  },
+  {
+    "speciesId": "roselia"
+  },
+  {
+    "speciesId": "roserade"
+  },
+  {
+    "speciesId": "rotom"
+  },
+  {
+    "speciesId": "rotom_fan"
+  },
+  {
+    "speciesId": "rotom_frost"
+  },
+  {
+    "speciesId": "rotom_heat"
+  },
+  {
+    "speciesId": "rotom_mow"
+  },
+  {
+    "speciesId": "rotom_wash"
+  },
+  {
+    "speciesId": "rowlet"
+  },
+  {
+    "speciesId": "rufflet"
+  },
+  {
+    "speciesId": "runerigus"
+  },
+  {
+    "speciesId": "sableye"
+  },
+  {
+    "speciesId": "sableye_mega"
+  },
+  {
+    "speciesId": "sableye_shadow"
+  },
+  {
+    "speciesId": "salamence"
+  },
+  {
+    "speciesId": "salamence_mega"
+  },
+  {
+    "speciesId": "salamence_shadow"
+  },
+  {
+    "speciesId": "salandit"
+  },
+  {
+    "speciesId": "salazzle"
+  },
+  {
+    "speciesId": "samurott"
+  },
+  {
+    "speciesId": "samurott_hisuian"
+  },
+  {
+    "speciesId": "samurott_shadow"
+  },
+  {
+    "speciesId": "sandaconda"
+  },
+  {
+    "speciesId": "sandile"
+  },
+  {
+    "speciesId": "sandshrew"
+  },
+  {
+    "speciesId": "sandshrew_alolan"
+  },
+  {
+    "speciesId": "sandshrew_alolan_shadow"
+  },
+  {
+    "speciesId": "sandshrew_shadow"
+  },
+  {
+    "speciesId": "sandslash"
+  },
+  {
+    "speciesId": "sandslash_alolan"
+  },
+  {
+    "speciesId": "sandslash_alolan_shadow"
+  },
+  {
+    "speciesId": "sandslash_shadow"
+  },
+  {
+    "speciesId": "sandygast"
+  },
+  {
+    "speciesId": "sandyshocks"
+  },
+  {
+    "speciesId": "sawk"
+  },
+  {
+    "speciesId": "sawk_shadow"
+  },
+  {
+    "speciesId": "sawsbuck"
+  },
+  {
+    "speciesId": "scatterbug"
+  },
+  {
+    "speciesId": "sceptile"
+  },
+  {
+    "speciesId": "sceptile_mega"
+  },
+  {
+    "speciesId": "sceptile_shadow"
+  },
+  {
+    "speciesId": "scizor"
+  },
+  {
+    "speciesId": "scizor_mega"
+  },
+  {
+    "speciesId": "scizor_shadow"
+  },
+  {
+    "speciesId": "scolipede"
+  },
+  {
+    "speciesId": "scolipede_shadow"
+  },
+  {
+    "speciesId": "scorbunny"
+  },
+  {
+    "speciesId": "scovillain"
+  },
+  {
+    "speciesId": "scrafty"
+  },
+  {
+    "speciesId": "scraggy"
+  },
+  {
+    "speciesId": "screamtail"
+  },
+  {
+    "speciesId": "scyther"
+  },
+  {
+    "speciesId": "scyther_shadow"
+  },
+  {
+    "speciesId": "seadra"
+  },
+  {
+    "speciesId": "seadra_shadow"
+  },
+  {
+    "speciesId": "seaking"
+  },
+  {
+    "speciesId": "sealeo"
+  },
+  {
+    "speciesId": "sealeo_shadow"
+  },
+  {
+    "speciesId": "seedot"
+  },
+  {
+    "speciesId": "seedot_shadow"
+  },
+  {
+    "speciesId": "seel"
+  },
+  {
+    "speciesId": "seismitoad"
+  },
+  {
+    "speciesId": "sentret"
+  },
+  {
+    "speciesId": "serperior"
+  },
+  {
+    "speciesId": "serperior_shadow"
+  },
+  {
+    "speciesId": "servine"
+  },
+  {
+    "speciesId": "servine_shadow"
+  },
+  {
+    "speciesId": "seviper"
+  },
+  {
+    "speciesId": "sewaddle"
+  },
+  {
+    "speciesId": "sharpedo"
+  },
+  {
+    "speciesId": "sharpedo_shadow"
+  },
+  {
+    "speciesId": "shaymin_land"
+  },
+  {
+    "speciesId": "shaymin_sky"
+  },
+  {
+    "speciesId": "shedinja"
+  },
+  {
+    "speciesId": "shelgon"
+  },
+  {
+    "speciesId": "shelgon_shadow"
+  },
+  {
+    "speciesId": "shellder"
+  },
+  {
+    "speciesId": "shellder_shadow"
+  },
+  {
+    "speciesId": "shellos"
+  },
+  {
+    "speciesId": "shelmet"
+  },
+  {
+    "speciesId": "shelmet_shadow"
+  },
+  {
+    "speciesId": "shieldon"
+  },
+  {
+    "speciesId": "shieldon_shadow"
+  },
+  {
+    "speciesId": "shiftry"
+  },
+  {
+    "speciesId": "shiftry_shadow"
+  },
+  {
+    "speciesId": "shiinotic"
+  },
+  {
+    "speciesId": "shinx"
+  },
+  {
+    "speciesId": "shinx_shadow"
+  },
+  {
+    "speciesId": "shroodle"
+  },
+  {
+    "speciesId": "shroomish"
+  },
+  {
+    "speciesId": "shuckle"
+  },
+  {
+    "speciesId": "shuckle_shadow"
+  },
+  {
+    "speciesId": "shuppet"
+  },
+  {
+    "speciesId": "shuppet_shadow"
+  },
+  {
+    "speciesId": "sigilyph"
+  },
+  {
+    "speciesId": "silcoon"
+  },
+  {
+    "speciesId": "silicobra"
+  },
+  {
+    "speciesId": "silvally"
+  },
+  {
+    "speciesId": "silvally_bug"
+  },
+  {
+    "speciesId": "silvally_dark"
+  },
+  {
+    "speciesId": "silvally_dragon"
+  },
+  {
+    "speciesId": "silvally_electric"
+  },
+  {
+    "speciesId": "silvally_fairy"
+  },
+  {
+    "speciesId": "silvally_fighting"
+  },
+  {
+    "speciesId": "silvally_fire"
+  },
+  {
+    "speciesId": "silvally_flying"
+  },
+  {
+    "speciesId": "silvally_ghost"
+  },
+  {
+    "speciesId": "silvally_grass"
+  },
+  {
+    "speciesId": "silvally_ground"
+  },
+  {
+    "speciesId": "silvally_ice"
+  },
+  {
+    "speciesId": "silvally_poison"
+  },
+  {
+    "speciesId": "silvally_psychic"
+  },
+  {
+    "speciesId": "silvally_rock"
+  },
+  {
+    "speciesId": "silvally_steel"
+  },
+  {
+    "speciesId": "silvally_water"
+  },
+  {
+    "speciesId": "simipour"
+  },
+  {
+    "speciesId": "simisage"
+  },
+  {
+    "speciesId": "simisear"
+  },
+  {
+    "speciesId": "sinistea"
+  },
+  {
+    "speciesId": "sirfetchd"
+  },
+  {
+    "speciesId": "sizzlipede"
+  },
+  {
+    "speciesId": "skarmory"
+  },
+  {
+    "speciesId": "skarmory_shadow"
+  },
+  {
+    "speciesId": "skeledirge"
+  },
+  {
+    "speciesId": "skiddo"
+  },
+  {
+    "speciesId": "skiploom"
+  },
+  {
+    "speciesId": "skiploom_shadow"
+  },
+  {
+    "speciesId": "skitty"
+  },
+  {
+    "speciesId": "skorupi"
+  },
+  {
+    "speciesId": "skorupi_shadow"
+  },
+  {
+    "speciesId": "skrelp"
+  },
+  {
+    "speciesId": "skuntank"
+  },
+  {
+    "speciesId": "skuntank_shadow"
+  },
+  {
+    "speciesId": "skwovet"
+  },
+  {
+    "speciesId": "slaking"
+  },
+  {
+    "speciesId": "slaking_shadow"
+  },
+  {
+    "speciesId": "slakoth"
+  },
+  {
+    "speciesId": "slakoth_shadow"
+  },
+  {
+    "speciesId": "sliggoo"
+  },
+  {
+    "speciesId": "slitherwing"
+  },
+  {
+    "speciesId": "slowbro"
+  },
+  {
+    "speciesId": "slowbro_galarian"
+  },
+  {
+    "speciesId": "slowbro_mega"
+  },
+  {
+    "speciesId": "slowbro_shadow"
+  },
+  {
+    "speciesId": "slowking"
+  },
+  {
+    "speciesId": "slowking_galarian"
+  },
+  {
+    "speciesId": "slowking_shadow"
+  },
+  {
+    "speciesId": "slowpoke"
+  },
+  {
+    "speciesId": "slowpoke_galarian"
+  },
+  {
+    "speciesId": "slowpoke_shadow"
+  },
+  {
+    "speciesId": "slugma"
+  },
+  {
+    "speciesId": "slurpuff"
+  },
+  {
+    "speciesId": "smeargle"
+  },
+  {
+    "speciesId": "smoliv"
+  },
+  {
+    "speciesId": "smoochum"
+  },
+  {
+    "speciesId": "sneasel"
+  },
+  {
+    "speciesId": "sneasel_hisuian"
+  },
+  {
+    "speciesId": "sneasel_hisuian_shadow"
+  },
+  {
+    "speciesId": "sneasel_shadow"
+  },
+  {
+    "speciesId": "sneasler"
+  },
+  {
+    "speciesId": "sneasler_shadow"
+  },
+  {
+    "speciesId": "snivy"
+  },
+  {
+    "speciesId": "snivy_shadow"
+  },
+  {
+    "speciesId": "snom"
+  },
+  {
+    "speciesId": "snorlax"
+  },
+  {
+    "speciesId": "snorlax_shadow"
+  },
+  {
+    "speciesId": "snorunt"
+  },
+  {
+    "speciesId": "snorunt_shadow"
+  },
+  {
+    "speciesId": "snover"
+  },
+  {
+    "speciesId": "snover_shadow"
+  },
+  {
+    "speciesId": "snubbull"
+  },
+  {
+    "speciesId": "snubbull_shadow"
+  },
+  {
+    "speciesId": "sobble"
   },
   {
     "speciesId": "solgaleo",
     "fastMove": "FIRE_SPIN",
-    "chargedMoves": [ "PSYCHIC_FANGS", "IRON_HEAD" ]
+    "chargedMoves": [
+      "PSYCHIC_FANGS",
+      "IRON_HEAD"
+    ]
+  },
+  {
+    "speciesId": "solosis"
+  },
+  {
+    "speciesId": "solosis_shadow"
+  },
+  {
+    "speciesId": "solrock"
+  },
+  {
+    "speciesId": "spearow"
+  },
+  {
+    "speciesId": "spectrier"
+  },
+  {
+    "speciesId": "spewpa"
+  },
+  {
+    "speciesId": "spheal"
+  },
+  {
+    "speciesId": "spheal_shadow"
+  },
+  {
+    "speciesId": "spidops"
+  },
+  {
+    "speciesId": "spinarak"
+  },
+  {
+    "speciesId": "spinda"
+  },
+  {
+    "speciesId": "spiritomb"
+  },
+  {
+    "speciesId": "spoink"
+  },
+  {
+    "speciesId": "spoink_shadow"
+  },
+  {
+    "speciesId": "sprigatito"
+  },
+  {
+    "speciesId": "spritzee"
+  },
+  {
+    "speciesId": "squawkabilly"
+  },
+  {
+    "speciesId": "squawkabilly_blue"
+  },
+  {
+    "speciesId": "squawkabilly_green"
+  },
+  {
+    "speciesId": "squawkabilly_white"
+  },
+  {
+    "speciesId": "squawkabilly_yellow"
+  },
+  {
+    "speciesId": "squirtle"
+  },
+  {
+    "speciesId": "squirtle_shadow"
+  },
+  {
+    "speciesId": "stakataka"
+  },
+  {
+    "speciesId": "stantler"
+  },
+  {
+    "speciesId": "stantler_shadow"
+  },
+  {
+    "speciesId": "staraptor"
+  },
+  {
+    "speciesId": "staraptor_shadow"
+  },
+  {
+    "speciesId": "staravia"
+  },
+  {
+    "speciesId": "staravia_shadow"
+  },
+  {
+    "speciesId": "starly"
+  },
+  {
+    "speciesId": "starly_shadow"
+  },
+  {
+    "speciesId": "starmie"
+  },
+  {
+    "speciesId": "staryu"
+  },
+  {
+    "speciesId": "steelix"
+  },
+  {
+    "speciesId": "steelix_mega"
+  },
+  {
+    "speciesId": "steelix_shadow"
+  },
+  {
+    "speciesId": "steenee"
+  },
+  {
+    "speciesId": "stonjourner"
+  },
+  {
+    "speciesId": "stoutland"
+  },
+  {
+    "speciesId": "stufful"
+  },
+  {
+    "speciesId": "stunfisk"
+  },
+  {
+    "speciesId": "stunfisk_galarian"
+  },
+  {
+    "speciesId": "stunky"
+  },
+  {
+    "speciesId": "stunky_shadow"
+  },
+  {
+    "speciesId": "sudowoodo"
+  },
+  {
+    "speciesId": "sudowoodo_shadow"
+  },
+  {
+    "speciesId": "suicune"
+  },
+  {
+    "speciesId": "suicune_shadow"
+  },
+  {
+    "speciesId": "sunflora"
+  },
+  {
+    "speciesId": "sunkern"
+  },
+  {
+    "speciesId": "surskit"
+  },
+  {
+    "speciesId": "swablu"
+  },
+  {
+    "speciesId": "swadloon"
+  },
+  {
+    "speciesId": "swalot"
+  },
+  {
+    "speciesId": "swampert"
+  },
+  {
+    "speciesId": "swampert_mega"
+  },
+  {
+    "speciesId": "swampert_shadow"
+  },
+  {
+    "speciesId": "swanna"
+  },
+  {
+    "speciesId": "swanna_shadow"
+  },
+  {
+    "speciesId": "swellow"
+  },
+  {
+    "speciesId": "swellow_shadow"
+  },
+  {
+    "speciesId": "swinub"
+  },
+  {
+    "speciesId": "swinub_shadow"
+  },
+  {
+    "speciesId": "swirlix"
+  },
+  {
+    "speciesId": "swoobat"
+  },
+  {
+    "speciesId": "sylveon"
+  },
+  {
+    "speciesId": "tadbulb"
+  },
+  {
+    "speciesId": "taillow"
+  },
+  {
+    "speciesId": "taillow_shadow"
+  },
+  {
+    "speciesId": "talonflame"
+  },
+  {
+    "speciesId": "tandemaus"
+  },
+  {
+    "speciesId": "tangela"
+  },
+  {
+    "speciesId": "tangela_shadow"
+  },
+  {
+    "speciesId": "tangrowth"
+  },
+  {
+    "speciesId": "tangrowth_shadow"
   },
   {
     "speciesId": "tapu_bulu",
     "fastMove": "BULLET_SEED",
-    "chargedMoves": [ "GRASS_KNOT", "NATURES_MADNESS" ]
+    "chargedMoves": [
+      "GRASS_KNOT",
+      "NATURES_MADNESS"
+    ]
+  },
+  {
+    "speciesId": "tapu_fini"
+  },
+  {
+    "speciesId": "tapu_koko"
+  },
+  {
+    "speciesId": "tapu_lele"
+  },
+  {
+    "speciesId": "tarountula"
+  },
+  {
+    "speciesId": "tatsugiri_curly"
+  },
+  {
+    "speciesId": "tatsugiri_droopy"
+  },
+  {
+    "speciesId": "tatsugiri_stretchy"
+  },
+  {
+    "speciesId": "tauros"
+  },
+  {
+    "speciesId": "tauros_aqua"
+  },
+  {
+    "speciesId": "tauros_blaze"
+  },
+  {
+    "speciesId": "tauros_combat"
+  },
+  {
+    "speciesId": "teddiursa"
+  },
+  {
+    "speciesId": "teddiursa_shadow"
+  },
+  {
+    "speciesId": "tentacool"
+  },
+  {
+    "speciesId": "tentacool_shadow"
+  },
+  {
+    "speciesId": "tentacruel"
+  },
+  {
+    "speciesId": "tentacruel_shadow"
+  },
+  {
+    "speciesId": "tepig"
+  },
+  {
+    "speciesId": "tepig_shadow"
+  },
+  {
+    "speciesId": "terrakion"
+  },
+  {
+    "speciesId": "thievul"
+  },
+  {
+    "speciesId": "throh"
+  },
+  {
+    "speciesId": "throh_shadow"
+  },
+  {
+    "speciesId": "thundurus_incarnate"
+  },
+  {
+    "speciesId": "thundurus_therian"
+  },
+  {
+    "speciesId": "thwackey"
+  },
+  {
+    "speciesId": "timburr"
+  },
+  {
+    "speciesId": "timburr_shadow"
+  },
+  {
+    "speciesId": "ting_lu"
+  },
+  {
+    "speciesId": "tinkatink"
+  },
+  {
+    "speciesId": "tinkaton"
+  },
+  {
+    "speciesId": "tinkatuff"
+  },
+  {
+    "speciesId": "tirtouga"
+  },
+  {
+    "speciesId": "tirtouga_shadow"
+  },
+  {
+    "speciesId": "toedscool"
+  },
+  {
+    "speciesId": "toedscruel"
+  },
+  {
+    "speciesId": "togedemaru"
+  },
+  {
+    "speciesId": "togekiss"
+  },
+  {
+    "speciesId": "togepi"
+  },
+  {
+    "speciesId": "togetic"
+  },
+  {
+    "speciesId": "torchic"
+  },
+  {
+    "speciesId": "torchic_shadow"
+  },
+  {
+    "speciesId": "torkoal"
+  },
+  {
+    "speciesId": "tornadus_incarnate"
+  },
+  {
+    "speciesId": "tornadus_therian"
+  },
+  {
+    "speciesId": "torracat"
+  },
+  {
+    "speciesId": "torterra"
+  },
+  {
+    "speciesId": "torterra_shadow"
+  },
+  {
+    "speciesId": "totodile"
+  },
+  {
+    "speciesId": "totodile_shadow"
+  },
+  {
+    "speciesId": "toucannon"
+  },
+  {
+    "speciesId": "toxapex"
+  },
+  {
+    "speciesId": "toxel"
+  },
+  {
+    "speciesId": "toxicroak"
+  },
+  {
+    "speciesId": "toxicroak_shadow"
+  },
+  {
+    "speciesId": "toxtricity"
+  },
+  {
+    "speciesId": "toxtricity_amped"
+  },
+  {
+    "speciesId": "toxtricity_low_key"
+  },
+  {
+    "speciesId": "tranquill"
+  },
+  {
+    "speciesId": "tranquill_shadow"
+  },
+  {
+    "speciesId": "trapinch"
+  },
+  {
+    "speciesId": "trapinch_shadow"
+  },
+  {
+    "speciesId": "treecko"
+  },
+  {
+    "speciesId": "treecko_shadow"
+  },
+  {
+    "speciesId": "trevenant"
+  },
+  {
+    "speciesId": "tropius"
+  },
+  {
+    "speciesId": "trubbish"
+  },
+  {
+    "speciesId": "trubbish_shadow"
+  },
+  {
+    "speciesId": "trumbeak"
+  },
+  {
+    "speciesId": "tsareena"
+  },
+  {
+    "speciesId": "turtonator"
+  },
+  {
+    "speciesId": "turtwig"
+  },
+  {
+    "speciesId": "turtwig_shadow"
+  },
+  {
+    "speciesId": "tympole"
+  },
+  {
+    "speciesId": "tynamo"
+  },
+  {
+    "speciesId": "type_null"
+  },
+  {
+    "speciesId": "typhlosion"
+  },
+  {
+    "speciesId": "typhlosion_hisuian"
+  },
+  {
+    "speciesId": "typhlosion_shadow"
+  },
+  {
+    "speciesId": "tyranitar"
+  },
+  {
+    "speciesId": "tyranitar_mega"
+  },
+  {
+    "speciesId": "tyranitar_shadow"
+  },
+  {
+    "speciesId": "tyrantrum"
+  },
+  {
+    "speciesId": "tyrantrum_shadow"
+  },
+  {
+    "speciesId": "tyrogue"
+  },
+  {
+    "speciesId": "tyrunt"
+  },
+  {
+    "speciesId": "tyrunt_shadow"
+  },
+  {
+    "speciesId": "umbreon"
+  },
+  {
+    "speciesId": "unfezant"
+  },
+  {
+    "speciesId": "unfezant_shadow"
+  },
+  {
+    "speciesId": "unown"
+  },
+  {
+    "speciesId": "ursaluna"
+  },
+  {
+    "speciesId": "ursaluna_shadow"
+  },
+  {
+    "speciesId": "ursaring"
+  },
+  {
+    "speciesId": "ursaring_shadow"
+  },
+  {
+    "speciesId": "urshifu_rapid_strike"
+  },
+  {
+    "speciesId": "urshifu_single_strike"
+  },
+  {
+    "speciesId": "uxie"
+  },
+  {
+    "speciesId": "vanillish"
+  },
+  {
+    "speciesId": "vanillite"
+  },
+  {
+    "speciesId": "vanilluxe"
+  },
+  {
+    "speciesId": "vaporeon"
+  },
+  {
+    "speciesId": "varoom"
+  },
+  {
+    "speciesId": "veluza"
+  },
+  {
+    "speciesId": "venipede"
+  },
+  {
+    "speciesId": "venipede_shadow"
+  },
+  {
+    "speciesId": "venomoth"
+  },
+  {
+    "speciesId": "venomoth_shadow"
+  },
+  {
+    "speciesId": "venonat"
+  },
+  {
+    "speciesId": "venonat_shadow"
+  },
+  {
+    "speciesId": "venusaur"
+  },
+  {
+    "speciesId": "venusaur_mega"
+  },
+  {
+    "speciesId": "venusaur_shadow"
+  },
+  {
+    "speciesId": "vespiquen"
+  },
+  {
+    "speciesId": "vibrava"
+  },
+  {
+    "speciesId": "vibrava_shadow"
+  },
+  {
+    "speciesId": "victini"
+  },
+  {
+    "speciesId": "victreebel"
+  },
+  {
+    "speciesId": "victreebel_shadow"
+  },
+  {
+    "speciesId": "vigoroth"
+  },
+  {
+    "speciesId": "vigoroth_shadow"
+  },
+  {
+    "speciesId": "vikavolt"
+  },
+  {
+    "speciesId": "vileplume"
+  },
+  {
+    "speciesId": "vileplume_shadow"
+  },
+  {
+    "speciesId": "virizion"
+  },
+  {
+    "speciesId": "vivillon"
+  },
+  {
+    "speciesId": "volbeat"
+  },
+  {
+    "speciesId": "volcanion"
+  },
+  {
+    "speciesId": "volcarona"
+  },
+  {
+    "speciesId": "voltorb"
+  },
+  {
+    "speciesId": "voltorb_hisuian"
+  },
+  {
+    "speciesId": "voltorb_shadow"
+  },
+  {
+    "speciesId": "vullaby"
+  },
+  {
+    "speciesId": "vulpix"
+  },
+  {
+    "speciesId": "vulpix_alolan"
+  },
+  {
+    "speciesId": "vulpix_alolan_shadow"
+  },
+  {
+    "speciesId": "vulpix_shadow"
+  },
+  {
+    "speciesId": "wailmer"
+  },
+  {
+    "speciesId": "wailmer_shadow"
+  },
+  {
+    "speciesId": "wailord"
+  },
+  {
+    "speciesId": "wailord_shadow"
+  },
+  {
+    "speciesId": "walrein"
+  },
+  {
+    "speciesId": "walrein_shadow"
+  },
+  {
+    "speciesId": "wartortle"
+  },
+  {
+    "speciesId": "wartortle_shadow"
+  },
+  {
+    "speciesId": "watchog"
+  },
+  {
+    "speciesId": "watchog_shadow"
+  },
+  {
+    "speciesId": "wattrel"
+  },
+  {
+    "speciesId": "weavile"
+  },
+  {
+    "speciesId": "weavile_shadow"
+  },
+  {
+    "speciesId": "weedle"
+  },
+  {
+    "speciesId": "weedle_shadow"
+  },
+  {
+    "speciesId": "weepinbell"
+  },
+  {
+    "speciesId": "weepinbell_shadow"
+  },
+  {
+    "speciesId": "weezing"
+  },
+  {
+    "speciesId": "weezing_galarian"
+  },
+  {
+    "speciesId": "weezing_galarian_shadow"
+  },
+  {
+    "speciesId": "weezing_shadow"
+  },
+  {
+    "speciesId": "whimsicott"
+  },
+  {
+    "speciesId": "whirlipede"
+  },
+  {
+    "speciesId": "whirlipede_shadow"
+  },
+  {
+    "speciesId": "whiscash"
+  },
+  {
+    "speciesId": "whiscash_shadow"
+  },
+  {
+    "speciesId": "whismur"
+  },
+  {
+    "speciesId": "whismur_shadow"
+  },
+  {
+    "speciesId": "wigglytuff"
+  },
+  {
+    "speciesId": "wiglett"
+  },
+  {
+    "speciesId": "wimpod"
+  },
+  {
+    "speciesId": "wingull"
+  },
+  {
+    "speciesId": "wishiwashi"
+  },
+  {
+    "speciesId": "wishiwashi_school"
+  },
+  {
+    "speciesId": "wishiwashi_solo"
+  },
+  {
+    "speciesId": "wo_chien"
+  },
+  {
+    "speciesId": "wobbuffet"
+  },
+  {
+    "speciesId": "wobbuffet_shadow"
+  },
+  {
+    "speciesId": "woobat"
+  },
+  {
+    "speciesId": "wooloo"
+  },
+  {
+    "speciesId": "wooper"
+  },
+  {
+    "speciesId": "wooper_paldean"
+  },
+  {
+    "speciesId": "wooper_shadow"
+  },
+  {
+    "speciesId": "wormadam_plant"
+  },
+  {
+    "speciesId": "wormadam_sandy"
+  },
+  {
+    "speciesId": "wormadam_trash"
+  },
+  {
+    "speciesId": "wugtrio"
+  },
+  {
+    "speciesId": "wurmple"
+  },
+  {
+    "speciesId": "wynaut"
+  },
+  {
+    "speciesId": "wyrdeer"
+  },
+  {
+    "speciesId": "xatu"
+  },
+  {
+    "speciesId": "xatu_shadow"
   },
   {
     "speciesId": "xerneas",
     "fastMove": "GEOMANCY",
-    "chargedMoves": [ "CLOSE_COMBAT", "MOONBLAST" ]
+    "chargedMoves": [
+      "CLOSE_COMBAT",
+      "MOONBLAST"
+    ]
+  },
+  {
+    "speciesId": "xurkitree"
+  },
+  {
+    "speciesId": "yamask"
+  },
+  {
+    "speciesId": "yamask_galarian"
+  },
+  {
+    "speciesId": "yamper"
+  },
+  {
+    "speciesId": "yanma"
+  },
+  {
+    "speciesId": "yanmega"
+  },
+  {
+    "speciesId": "yungoos"
   },
   {
     "speciesId": "yveltal",
     "fastMove": "SUCKER_PUNCH",
-    "chargedMoves": [ "OBLIVION_WING", "DARK_PULSE" ]
+    "chargedMoves": [
+      "OBLIVION_WING",
+      "DARK_PULSE"
+    ]
   },
   {
     "speciesId": "zacian_crowned_sword",
     "fastMove": "METAL_CLAW",
-    "chargedMoves": [ "CLOSE_COMBAT", "BEHEMOTH_BLADE" ]
+    "chargedMoves": [
+      "CLOSE_COMBAT",
+      "BEHEMOTH_BLADE"
+    ]
   },
   {
     "speciesId": "zacian_hero",
     "fastMove": "QUICK_ATTACK",
-    "chargedMoves": [ "WILD_CHARGE", "PLAY_ROUGH" ]
-  },
-  {
-    "speciesId": "zamazenta_crowned_shield",
-    "fastMove": "METAL_CLAW",
-    "chargedMoves": [ "CLOSE_COMBAT", "BEHEMOTH_BASH" ]
-  },
-  {
-    "speciesId": "zarude",
-    "fastMove": "VINE_WHIP",
-    "chargedMoves": [ "POWER_WHIP", "DARK_PULSE" ]
-  },
-  {
-    "speciesId": "zygarde_complete",
-    "fastMove": "DRAGON_TAIL",
-    "chargedMoves": [ "CRUNCH", "EARTHQUAKE" ]
-  },
-  {
-    "speciesId": "zygarde_complete",
-    "fastMove": "DRAGON_TAIL",
-    "chargedMoves": [ "BULLDOZE", "OUTRAGE" ]
+    "chargedMoves": [
+      "WILD_CHARGE",
+      "PLAY_ROUGH"
+    ]
   },
   {
     "speciesId": "zamazenta_crowned_shield",
     "fastMove": "ICE_FANG",
-    "chargedMoves": [ "CLOSE_COMBAT", "BEHEMOTH_BASH" ]
+    "chargedMoves": [
+      "CLOSE_COMBAT",
+      "BEHEMOTH_BASH"
+    ]
+  },
+  {
+    "speciesId": "zamazenta_hero"
+  },
+  {
+    "speciesId": "zangoose"
+  },
+  {
+    "speciesId": "zapdos"
+  },
+  {
+    "speciesId": "zapdos_galarian"
+  },
+  {
+    "speciesId": "zapdos_shadow"
+  },
+  {
+    "speciesId": "zarude",
+    "fastMove": "VINE_WHIP",
+    "chargedMoves": [
+      "POWER_WHIP",
+      "DARK_PULSE"
+    ]
+  },
+  {
+    "speciesId": "zebstrika"
+  },
+  {
+    "speciesId": "zebstrika_shadow"
+  },
+  {
+    "speciesId": "zekrom"
+  },
+  {
+    "speciesId": "zeraora"
+  },
+  {
+    "speciesId": "zigzagoon"
+  },
+  {
+    "speciesId": "zigzagoon_galarian"
+  },
+  {
+    "speciesId": "zigzagoon_galarian_shadow"
+  },
+  {
+    "speciesId": "zoroark"
+  },
+  {
+    "speciesId": "zoroark_hisuian"
+  },
+  {
+    "speciesId": "zorua"
+  },
+  {
+    "speciesId": "zorua_hisuian"
+  },
+  {
+    "speciesId": "zubat"
+  },
+  {
+    "speciesId": "zubat_shadow"
+  },
+  {
+    "speciesId": "zweilous"
+  },
+  {
+    "speciesId": "zygarde"
+  },
+  {
+    "speciesId": "zygarde_10"
+  },
+  {
+    "speciesId": "zygarde_complete",
+    "fastMove": "DRAGON_TAIL",
+    "chargedMoves": [
+      "BULLDOZE",
+      "OUTRAGE"
+    ]
   }
 ]
