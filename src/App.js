@@ -1,4 +1,5 @@
 ﻿// src/App.js
+import QuickMatrix from "./components/QuickMatrix";
 import React, { useEffect, useMemo, useState } from "react";
 import PokemonSelect from "./components/PokemonSelect";
 import { dedupeBySpecies, toOptions, humanize, indexById } from "./lib/pokeList";
@@ -7,8 +8,8 @@ import gm from "./Data/gamemaster.json";
 import {
     buildMoveBook,
     bestOfThree,
-    recommendMovesFor
-    // dangerMovesFor, // no longer needed - using timing from simulateDuel results
+    recommendMovesFor,
+    eligibleForLeague
 } from "./battleCalc";
 
 /* ---------------- Small UI bits ---------------- */
@@ -189,12 +190,27 @@ export default function App() {
             .then((mod) => {
                 const list = normalizeList(mod.default);
                 const clean = dedupeBySpecies(list);
-                setPoolRaw(clean);
-                setPoolOpts(toOptions(clean).map((o) => o.label));
-                setPoolIndex(indexById(clean));
+                // keep only species that can exist under the selected league cap
+                const filtered = clean.filter((x) => eligibleForLeague(x.speciesId, league));
+                setPoolRaw(filtered);
+                setPoolOpts(toOptions(filtered).map((o) => o.label));
+                setPoolIndex(indexById(filtered));
             })
             .catch((err) => setLoadError(String(err)));
     }, [league]);
+
+    /* ----- compute myTeamAlive ONCE (top-level hook) ----- */
+    const myTeamAlive = useMemo(() => {
+        const map = poolIndex;
+        return me
+            .filter((m) => !m.dead && m.id)
+            .map((s) => {
+                const base = { ...map[s.id], name: s.label };
+                const rec = recommendMovesFor(s.id, map[s.id]);
+                // include speciesId so downstream helpers can access it
+                return { ...base, speciesId: s.id, ...rec };
+            });
+    }, [me, poolIndex]);
 
     /* ----- recompute when picks/shields change ----- */
     const ready = useMemo(() => {
@@ -212,20 +228,9 @@ export default function App() {
 
         const map = poolIndex;
 
-        // My team (ensure best moves)
-        const myTeamAlive = me
-            .filter((m) => !m.dead && m.id)
-            .map((s) => {
-                const base = { ...map[s.id], name: s.label };
-                const rec = recommendMovesFor(s.id, map[s.id]);
-                return { ...base, ...rec }; // force best moves for the user
-            });
-
         // Enemies (use league-file moves if present)
         const enemiesAlive = op
-            .map((s) =>
-                s.id && !s.dead ? { ...map[s.id], name: s.label } : null
-            )
+            .map((s) => (s.id && !s.dead ? { ...map[s.id], name: s.label } : null))
             .filter(Boolean);
 
         if (!myTeamAlive.length || !enemiesAlive.length) {
@@ -252,7 +257,7 @@ export default function App() {
                     id: bestFight.bMostDangerous,
                     fasts: bestFight.bFastMovesToDanger,
                     turns: bestFight.bTurnsToDanger,
-                    seconds: Number(bestFight.bSecondsToDanger || 0)
+                    seconds: Number(bestFight.bSecondsToDanger || 0),
                 }
                 : null;
 
@@ -261,7 +266,7 @@ export default function App() {
                     id: bestFight.aMostDangerous,
                     fasts: bestFight.aFastMovesToDanger,
                     turns: bestFight.aTurnsToDanger,
-                    seconds: Number(bestFight.aSecondsToDanger || 0)
+                    seconds: Number(bestFight.aSecondsToDanger || 0),
                 }
                 : null;
 
@@ -271,12 +276,12 @@ export default function App() {
                 yourRecommended: bestFight?.aRecommended || "",
                 enemyDanger,
                 myDanger,
-                fights
+                fights,
             };
         });
 
         setResults({ perEnemy });
-    }, [ready, me, op, myShields, opShields, poolIndex, league]);
+    }, [ready, myTeamAlive, op, myShields, opShields, poolIndex, league]);
 
     /* ----- resets ----- */
     function resetEnemy() {
@@ -555,6 +560,18 @@ export default function App() {
                         be added later - UI stays the same.
                     </div>
                 </div>
+            )}
+
+            {/* Quick Matrix (top-meta style table) */}
+            {myTeamAlive.length > 0 && (
+                <QuickMatrix
+                    league={league}
+                    poolRaw={poolRaw}
+                    poolIndex={poolIndex}
+                    myTeamAlive={myTeamAlive}
+                    myShields={myShields}
+                    foeShields={opShields}
+                />
             )}
         </div>
     );
