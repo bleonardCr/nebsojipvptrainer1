@@ -127,7 +127,7 @@ export default function App() {
 
     const [league, setLeague] = useState(LEAGUE_NAMES[0]);
 
-    // league data & options
+    // league data and options
     const [poolRaw, setPoolRaw] = useState([]);
     const [poolOpts, setPoolOpts] = useState([]);
     const [poolIndex, setPoolIndex] = useState({});
@@ -190,7 +190,6 @@ export default function App() {
             .then((mod) => {
                 const list = normalizeList(mod.default);
                 const clean = dedupeBySpecies(list);
-                // keep only species that can exist under the selected league cap
                 const filtered = clean.filter((x) => eligibleForLeague(x.speciesId, league));
                 setPoolRaw(filtered);
                 setPoolOpts(toOptions(filtered).map((o) => o.label));
@@ -207,14 +206,12 @@ export default function App() {
             .map((s) => {
                 const base = { ...map[s.id], name: s.label };
                 const rec = recommendMovesFor(s.id, map[s.id]);
-                // include speciesId so downstream helpers can access it
                 return { ...base, speciesId: s.id, ...rec };
             });
     }, [me, poolIndex]);
 
     /* ----- recompute when picks/shields change ----- */
     const ready = useMemo(() => {
-        // only 1 alive & selected required on each side
         const myAliveChosen = me.some((m) => !!m.id && !m.dead);
         const foeAliveChosen = op.some((o) => !!o.id && !o.dead);
         return myAliveChosen && foeAliveChosen;
@@ -228,7 +225,7 @@ export default function App() {
 
         const map = poolIndex;
 
-        // Enemies (use league-file moves if present)
+        // Enemies
         const enemiesAlive = op
             .map((s) => (s.id && !s.dead ? { ...map[s.id], name: s.label } : null))
             .filter(Boolean);
@@ -248,34 +245,33 @@ export default function App() {
                 league
             );
 
-            // find the fight row that matches the best pick
             const bestFight = fights.find((f) => f.you === best.you) || fights[0];
 
-            // extract single most dangerous move and timing for enemy and for me
-            const enemyDanger = bestFight?.bMostDangerous
-                ? {
-                    id: bestFight.bMostDangerous,
-                    fasts: bestFight.bFastMovesToDanger,
-                    turns: bestFight.bTurnsToDanger,
-                    seconds: Number(bestFight.bSecondsToDanger || 0),
-                }
-                : null;
+            // Arrays added by simulateDuel: aDangerList and bDangerList
+            const enemyDangers = Array.isArray(bestFight?.bDangerList) ? bestFight.bDangerList : [];
+            const myDangers = Array.isArray(bestFight?.aDangerList) ? bestFight.aDangerList : [];
 
-            const myDanger = bestFight?.aMostDangerous
-                ? {
-                    id: bestFight.aMostDangerous,
-                    fasts: bestFight.aFastMovesToDanger,
-                    turns: bestFight.aTurnsToDanger,
-                    seconds: Number(bestFight.aSecondsToDanger || 0),
-                }
-                : null;
+            // Backward compatible fallback if arrays are missing
+            const enemyFallback = bestFight?.bMostDangerous != null ? [{
+                id: bestFight.bMostDangerous,
+                fasts: bestFight.bFastMovesToDanger,
+                turns: bestFight.bTurnsToDanger,
+                seconds: Number(bestFight.bSecondsToDanger || 0),
+            }] : [];
+
+            const myFallback = bestFight?.aMostDangerous != null ? [{
+                id: bestFight.aMostDangerous,
+                fasts: bestFight.aFastMovesToDanger,
+                turns: bestFight.aTurnsToDanger,
+                seconds: Number(bestFight.aSecondsToDanger || 0),
+            }] : [];
 
             return {
                 enemy: enemy.name,
                 bestPick: best.you,
                 yourRecommended: bestFight?.aRecommended || "",
-                enemyDanger,
-                myDanger,
+                enemyDangers: enemyDangers.length ? enemyDangers : enemyFallback,
+                myDangers: myDangers.length ? myDangers : myFallback,
                 fights,
             };
         });
@@ -288,7 +284,6 @@ export default function App() {
         setOp([{ ...empty }, { ...empty }, { ...empty }]);
         setResults(null);
         setOpShields(2);
-        // reset both shields for simplicity
         setMyShields(2);
     }
     function resetMyTeam() {
@@ -331,6 +326,20 @@ export default function App() {
         borderRadius: 999,
     };
 
+    const DangerList = ({ list }) => {
+        if (!list || list.length === 0) return <>—</>;
+        return (
+            <>
+                {list.map((d, i) => (
+                    <span key={`${d.id}-${i}`}>
+                        <b>{d.id}</b> - {d.fasts} fasts - {d.turns} turns - {d.seconds.toFixed(1)}s
+                        {i < list.length - 1 ? " · " : ""}
+                    </span>
+                ))}
+            </>
+        );
+    };
+
     return (
         <div
             style={{
@@ -363,7 +372,7 @@ export default function App() {
             </div>
 
             <div style={colWrap}>
-                {/* Your Team (always 3, only 1 required) */}
+                {/* Your Team */}
                 <div style={box}>
                     <h3 style={{ margin: "0 0 4px 0" }}>Your Team (3)</h3>
                     <div style={{ ...small, marginBottom: 8 }}>
@@ -403,20 +412,20 @@ export default function App() {
                                 cursor: "pointer",
                                 height: 36,
                             }}
-                            title="Clear your picks & results (also resets your shields)"
+                            title="Clear your picks and results (also resets your shields)"
                         >
                             Reset My Team
                         </button>
                     </div>
 
                     <div style={{ ...small, marginTop: 8 }}>
-                        Use <span style={pill}>☠️ Dead</span> /{" "}
+                        Use <span style={pill}>☠️ Dead</span> or{" "}
                         <span style={pill}>✖️ Exclude</span> to keep a pick visible but out of
                         the calc.
                     </div>
                 </div>
 
-                {/* Opponents (up to 3, only 1 required) */}
+                {/* Opponents */}
                 <div style={box}>
                     <h3 style={{ margin: "0 0 4px 0" }}>Opponents (up to 3)</h3>
                     <div style={{ ...small, marginBottom: 8 }}>
@@ -456,7 +465,7 @@ export default function App() {
                                 cursor: "pointer",
                                 height: 36,
                             }}
-                            title="Clear enemies & results (also resets both shields)"
+                            title="Clear enemies and results (also resets both shields)"
                         >
                             Reset Enemy
                         </button>
@@ -497,23 +506,13 @@ export default function App() {
                                             borderRadius: 999,
                                         }}
                                     >
-                                        {/* single enemy danger move + timing */}
-                                        Danger move:{" "}
-                                        <b>
-                                            {E.enemyDanger ? E.enemyDanger.id : "—"}
-                                        </b>
-                                        {E.enemyDanger && (
-                                            <> - {E.enemyDanger.fasts} fasts - {E.enemyDanger.turns} turns - {E.enemyDanger.seconds.toFixed(1)}s</>
-                                        )}
+                                        Danger moves: <DangerList list={E.enemyDangers} />
                                     </div>
                                 </div>
 
                                 <div style={{ fontSize: 13, color: "#374151", marginTop: 6, marginBottom: 8 }}>
-                                    Best of your team: <b>{E.bestPick}</b> &nbsp;|&nbsp; Your danger move:{" "}
-                                    <b>{E.myDanger ? E.myDanger.id : "—"}</b>
-                                    {E.myDanger && (
-                                        <> - {E.myDanger.fasts} fasts - {E.myDanger.turns} turns - {E.myDanger.seconds.toFixed(1)}s</>
-                                    )}
+                                    Best of your team: <b>{E.bestPick}</b> | Your danger moves:{" "}
+                                    <DangerList list={E.myDangers} />
                                 </div>
 
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
@@ -556,13 +555,13 @@ export default function App() {
                         ))}
                     </div>
                     <div style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
-                        Competitive-lite sim (turns, energy, type, STAB, shields). IVs/buffs can
+                        Competitive-lite sim (turns, energy, type, STAB, shields). IVs and buffs can
                         be added later - UI stays the same.
                     </div>
                 </div>
             )}
 
-            {/* Quick Matrix (top-meta style table) */}
+            {/* Quick Matrix */}
             {myTeamAlive.length > 0 && (
                 <QuickMatrix
                     league={league}

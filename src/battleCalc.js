@@ -31,19 +31,17 @@ const normId = (s) =>
 
 // Robust league cap normalization
 function capLeague(league) {
-    if (Number.isFinite(league)) return Number(league); // numeric cap passed
-
+    if (Number.isFinite(league)) return Number(league);
     const key = String(league || "")
         .toLowerCase()
         .replace(/\s+/g, "")
-        .replace(/league$/, ""); // strip trailing "league"
-
+        .replace(/league$/, "");
     switch (key) {
         case "great": return 1500;
         case "ultra": return 2500;
         case "master": return Infinity;
         default: {
-            const m = key.match(/^(\d{3,4})$/); // allow "1500" or "2500"
+            const m = key.match(/^(\d{3,4})$/);
             return m ? Number(m[1]) : Infinity;
         }
     }
@@ -92,19 +90,15 @@ function levelForCap(baseAtk, baseDef, baseSta, cap) {
 // Public - can this species exist at or under the league cap at some legal level?
 export function eligibleForLeague(speciesId, leagueName) {
     const cap = capLeague(leagueName);
-    if (!Number.isFinite(cap)) return true; // Master League is uncapped
-
+    if (!Number.isFinite(cap)) return true;
     const sid = normId(speciesId);
     const sp = SPECIES[sid];
     if (!sp) return false;
-
-    // CP grows monotonically with level; return true if ANY level 1..50 is <= cap
     for (let L = 1; L <= 50; L++) {
         if (cpAtLevel(sp.atk, sp.def, sp.sta, L) <= cap) return true;
     }
     return false;
 }
-
 
 // ---------------- build species and moves from gamemaster ----------------
 function buildSpeciesBook(gm) {
@@ -174,7 +168,6 @@ export function buildMoveBook(gm) {
             out[id] = { id, kind, type, power, energyGain, energyCost, turns };
         }
     }
-    // Fallback TACKLE without logical assignment to satisfy older Babel
     if (!out.TACKLE) {
         out.TACKLE = {
             id: "TACKLE",
@@ -245,7 +238,6 @@ export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []
     const e = SPECIES[normId(enemySpeciesId)];
     const me = SPECIES[normId(mySpeciesId)];
     if (!e || !me || !enemyChargedIds?.length) return [];
-
     const atk = e.atk, def = me.def, myTypes = me.types || ["normal"];
     const scored = enemyChargedIds
         .map((mid) => String(mid || "").toUpperCase())
@@ -254,11 +246,10 @@ export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []
         .map((m) => {
             const stab = (e.types || []).includes(m.type) ? STAB : 1;
             const mult = eff(m.type, myTypes);
-            const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50)); // cheap moves favored
+            const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50));
             return { id: m.id, score: dmg(m.power, atk, def, stab, mult) * reach };
         })
         .sort((a, b) => b.score - a.score);
-
     return scored.slice(0, 2).map(x => x.id);
 }
 
@@ -267,7 +258,6 @@ function bestChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
     const atkSp = SPECIES[normId(attackerSid)];
     const defSp = SPECIES[normId(defenderSid)];
     if (!atkSp || !defSp || !chargedIds.length) return null;
-
     const atk = atkSp.atk, def = defSp.def, dTypes = defSp.types || ["normal"];
     let best = null;
     for (const id of chargedIds) {
@@ -282,9 +272,29 @@ function bestChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
     return best;
 }
 
+// Rank all charged moves attacker has against defender, best first
+function rankChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
+    const atkSp = SPECIES[normId(attackerSid)];
+    const defSp = SPECIES[normId(defenderSid)];
+    if (!atkSp || !defSp || !chargedIds.length) return [];
+    const atk = atkSp.atk, def = defSp.def, dTypes = defSp.types || ["normal"];
+    const ranked = [];
+    for (const id of chargedIds) {
+        const m = MOVES[String(id || "").toUpperCase()];
+        if (!m) continue;
+        const stab = (atkSp.types || []).includes(m.type) ? STAB : 1;
+        const mult = eff(m.type, dTypes);
+        const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50));
+        const score = dmg(m.power, atk, def, stab, mult) * reach;
+        ranked.push({ id: m.id, score, energyCost: m.energyCost });
+    }
+    ranked.sort((a, b) => b.score - a.score);
+    return ranked;
+}
+
 // Convert fast+charged IDs to a clean lookup key in MOVES
 function moveKey(id) {
-    return canonMoveId(id); // already normalizes (COMBAT_Vxx_MOVE_, Vxx_, whitespace, etc.)
+    return canonMoveId(id);
 }
 
 // How many fast moves until the first use of a charged move?
@@ -306,11 +316,25 @@ export function secondsToFirstCharged(fastMoveId, chargedMoveId) {
 
 function turnsToMove(fastMoveId, chargedEnergyCost) {
     const f = MOVES[String(fastMoveId || "TACKLE").toUpperCase()] || MOVES.TACKLE;
-    const gain = Math.max(1, f.energyGain || 0); // guard
+    const gain = Math.max(1, f.energyGain || 0);
     const fasts = Math.ceil(Math.max(0, chargedEnergyCost || 0) / gain);
     const turns = fasts * Math.max(1, f.turns || 1);
-    const seconds = turns * 0.5; // 1 turn = 0.5s in GO PvP
+    const seconds = turns * 0.5;
     return { fasts, turns, seconds, fastMoveId: f.id };
+}
+
+// Return the top N charged moves against a defender, each with timing from attacker's fast move
+function topChargedWithTimes(attacker, defender, n = 2) {
+    const ranked = rankChargedAgainst(
+        attacker?.speciesId || attacker?.name,
+        defender?.speciesId || defender?.name,
+        attacker?.chargedMoves || []
+    );
+    if (!ranked.length) return [];
+    return ranked.slice(0, n).map(r => {
+        const t = turnsToMove(attacker?.fastMove, r.energyCost);
+        return { id: r.id, fasts: t.fasts, turns: t.turns, seconds: t.seconds };
+    });
 }
 
 // Public helper if you want to call it directly from UI
@@ -371,6 +395,8 @@ export function simulateDuel(
                 bFastMovesToDanger: null,
                 bTurnsToDanger: null,
                 bSecondsToDanger: null,
+                aDangerList: [],
+                bDangerList: [],
                 summary: []
             };
         }
@@ -382,11 +408,12 @@ export function simulateDuel(
     const p2s = r.p2 || { hp: 0 };
     const res = r.result || "draw";
 
-    // Compute most dangerous charged move for each side and time to reach
-    const enemyBest = bestChargedAgainst(p2.speciesId, p1.speciesId, p2.chargedMoves) || null;
-    const mineBest = bestChargedAgainst(p1.speciesId, p2.speciesId, p1.chargedMoves) || null;
-    const enemyTime = enemyBest ? turnsToMove(p2.fastMove, enemyBest.energyCost) : null;
-    const mineTime = mineBest ? turnsToMove(p1.fastMove, mineBest.energyCost) : null;
+    // Compute top 2 charged moves with timings for each side
+    const enemyList = topChargedWithTimes(p2, p1, 2);
+    const myList = topChargedWithTimes(p1, p2, 2);
+
+    const enemyBest = enemyList[0] || null;
+    const mineBest = myList[0] || null;
 
     return {
         winner:
@@ -402,14 +429,18 @@ export function simulateDuel(
 
         // single most dangerous charged move and timing to reach it
         aMostDangerous: mineBest ? mineBest.id : null,
-        aFastMovesToDanger: mineTime ? mineTime.fasts : null,
-        aTurnsToDanger: mineTime ? mineTime.turns : null,
-        aSecondsToDanger: mineTime ? mineTime.seconds : null,
+        aFastMovesToDanger: mineBest ? mineBest.fasts : null,
+        aTurnsToDanger: mineBest ? mineBest.turns : null,
+        aSecondsToDanger: mineBest ? mineBest.seconds : null,
 
         bMostDangerous: enemyBest ? enemyBest.id : null,
-        bFastMovesToDanger: enemyTime ? enemyTime.fasts : null,
-        bTurnsToDanger: enemyTime ? enemyTime.turns : null,
-        bSecondsToDanger: enemyTime ? enemyTime.seconds : null,
+        bFastMovesToDanger: enemyBest ? enemyBest.fasts : null,
+        bTurnsToDanger: enemyBest ? enemyBest.turns : null,
+        bSecondsToDanger: enemyBest ? enemyBest.seconds : null,
+
+        // new arrays for top 2 with timings
+        aDangerList: myList,
+        bDangerList: enemyList,
 
         summary: []
     };
