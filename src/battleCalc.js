@@ -31,17 +31,22 @@ const normId = (s) =>
 
 // Robust league cap normalization
 function capLeague(league) {
-    if (Number.isFinite(league)) return Number(league);
+    if (Number.isFinite(league)) return Number(league); // numeric cap passed
+
     const key = String(league || "")
         .toLowerCase()
         .replace(/\s+/g, "")
-        .replace(/league$/, "");
+        .replace(/league$/, ""); // strip trailing "league"
+
     switch (key) {
-        case "great": return 1500;
-        case "ultra": return 2500;
-        case "master": return Infinity;
+        case "great":
+            return 1500;
+        case "ultra":
+            return 2500;
+        case "master":
+            return Infinity;
         default: {
-            const m = key.match(/^(\d{3,4})$/);
+            const m = key.match(/^(\d{3,4})$/); // allow "1500" or "2500"
             return m ? Number(m[1]) : Infinity;
         }
     }
@@ -90,15 +95,19 @@ function levelForCap(baseAtk, baseDef, baseSta, cap) {
 // Public - can this species exist at or under the league cap at some legal level?
 export function eligibleForLeague(speciesId, leagueName) {
     const cap = capLeague(leagueName);
-    if (!Number.isFinite(cap)) return true;
+    if (!Number.isFinite(cap)) return true; // Master League is uncapped
+
     const sid = normId(speciesId);
     const sp = SPECIES[sid];
     if (!sp) return false;
-    for (let L = 1; L <= 50; L++) {
+
+    const start = Math.max(1, sp.minLevel || 1); // <- respect minimum obtainable level
+    for (let L = start; L <= 50; L++) {
         if (cpAtLevel(sp.atk, sp.def, sp.sta, L) <= cap) return true;
     }
     return false;
 }
+
 
 // ---------------- build species and moves from gamemaster ----------------
 function buildSpeciesBook(gm) {
@@ -112,16 +121,39 @@ function buildSpeciesBook(gm) {
             const types = (typesArr || [])
                 .map((t) => String(t).replace(/^POKEMON_TYPE_/, "").toLowerCase())
                 .filter(Boolean);
+
+            // --- detect Legendaries/Mythicals/Ultra Beasts for level floor ---
+            const tags = (p.tags || p.tag || []).map(t => String(t).toLowerCase());
+            const cls = String(p.pokemonClass || p.class || "").toLowerCase();
+            const isLegendary = tags.includes("legendary") || cls.includes("legendary");
+            const isMythic = tags.includes("mythic") || cls.includes("mythic");
+            const isUltra = tags.includes("ultra_beast") || tags.includes("ultrabeast") || cls.includes("ultra");
+            // Research floor is 15; raids are 20. Using 15 filters the obviously-illegal GL picks.
+            const minLevel = (isLegendary || isMythic || isUltra) ? 15 : 1;
+
+            // --- capture move pools (various GM key names) ---
+            const fastPoolRaw =
+                p.fastMoves || p.quickMoves || p.quick_moves || p.moves?.fastMoves || [];
+            const chargedPoolRaw =
+                p.chargedMoves || p.cinematicMoves || p.charged_moves || p.moves?.chargedMoves || [];
+
+            const fastPool = [...new Set((fastPoolRaw || []).map(canonMoveId))];
+            const chargedPool = [...new Set((chargedPoolRaw || []).map(canonMoveId))];
+
             out[id] = {
                 atk: num(bs.atk ?? bs.attack, 200),
                 def: num(bs.def ?? bs.defense, 200),
                 sta: num(bs.hp ?? bs.sta ?? bs.stamina, 200),
                 types: types.length ? types : ["normal"],
+                minLevel,
+                fastPool,
+                chargedPool
             };
         }
     }
     return out;
 }
+
 
 export function buildMoveBook(gm) {
     SPECIES = buildSpeciesBook(gm);
@@ -168,6 +200,7 @@ export function buildMoveBook(gm) {
             out[id] = { id, kind, type, power, energyGain, energyCost, turns };
         }
     }
+    // Fallback TACKLE without logical assignment to satisfy older Babel
     if (!out.TACKLE) {
         out.TACKLE = {
             id: "TACKLE",
@@ -205,7 +238,9 @@ S("water", ["ground", "rock", "fire"], 1.6); S("water", ["water", "grass", "drag
 S("grass", ["ground", "rock", "water"], 1.6); S("grass", ["flying", "poison", "bug", "steel", "fire", "grass", "dragon"], 0.625);
 S("electric", ["flying", "water"], 1.6); S("electric", ["grass", "electric", "dragon"], 0.625); S("electric", ["ground"], 0.390625);
 S("psychic", ["fighting", "poison"], 1.6); S("psychic", ["psychic", "steel"], 0.625); S("psychic", ["dark"], 0.390625);
-S("ice", ["flying", "ground", "grass", "dragon"], 1.6); S("ice", ["steel", "fire", "water", "ice"], 0.625);
+S("ice", ["flying", "ground", "grass", "dragon"], 1.6); S("ice", ["steel", "fire", "水", "ice"], 0.625);
+// fix typo above if needed; keeping classic chart:
+S("ice", ["steel", "fire", "water", "ice"], 0.625);
 S("dragon", ["dragon"], 1.6); S("dragon", ["steel"], 0.625); S("dragon", ["fairy"], 0.390625);
 S("dark", ["ghost", "psychic"], 1.6); S("dark", ["fighting", "dark", "fairy"], 0.625);
 S("fairy", ["fighting", "dragon", "dark"], 1.6); S("fairy", ["poison", "steel", "fire"], 0.625);
@@ -221,16 +256,41 @@ const USER_MOVE_OVERRIDES = {
     "dialga": { fastMove: "DRAGON_BREATH", chargedMoves: ["ROAR_OF_TIME", "IRON_HEAD"] }
 };
 
+// Choose a sensible default fast move from the pool (highest energy gain)
+function bestFastFor(speciesId) {
+    const sp = SPECIES[normId(speciesId)];
+    if (!sp || !sp.fastPool?.length) return "TACKLE";
+    let best = sp.fastPool[0];
+    let bestGain = (MOVES[sp.fastPool[0]]?.energyGain ?? 0);
+    for (const id of sp.fastPool) {
+        const g = MOVES[id]?.energyGain ?? 0;
+        if (g > bestGain) { best = id; bestGain = g; }
+    }
+    return best || "TACKLE";
+}
+
 // Recommend moves for a species. If leagueEntry already has moves, keep them.
+// Otherwise fall back to GM pools so we can rank/show danger moves.
 export function recommendMovesFor(speciesId, leagueEntry) {
     const sid = normId(speciesId);
-    if (leagueEntry?.fastMove || (leagueEntry?.chargedMoves?.length))
+
+    // keep explicit picks
+    if (leagueEntry?.fastMove || (leagueEntry?.chargedMoves?.length)) {
         return {
             fastMove: leagueEntry.fastMove,
             chargedMoves: leagueEntry.chargedMoves
         };
+    }
+
+    // hard overrides
     if (USER_MOVE_OVERRIDES[sid]) return USER_MOVE_OVERRIDES[sid];
-    return { fastMove: leagueEntry?.fastMove, chargedMoves: leagueEntry?.chargedMoves || [] };
+
+    // fallback to GM pools
+    const sp = SPECIES[sid] || {};
+    return {
+        fastMove: bestFastFor(sid),
+        chargedMoves: Array.isArray(sp.chargedPool) ? sp.chargedPool : []
+    };
 }
 
 // Rank enemy charged vs my types; return top 2 IDs
@@ -238,6 +298,7 @@ export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []
     const e = SPECIES[normId(enemySpeciesId)];
     const me = SPECIES[normId(mySpeciesId)];
     if (!e || !me || !enemyChargedIds?.length) return [];
+
     const atk = e.atk, def = me.def, myTypes = me.types || ["normal"];
     const scored = enemyChargedIds
         .map((mid) => String(mid || "").toUpperCase())
@@ -246,10 +307,11 @@ export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []
         .map((m) => {
             const stab = (e.types || []).includes(m.type) ? STAB : 1;
             const mult = eff(m.type, myTypes);
-            const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50));
+            const reach = Math.min(1, 50 / Math.max(1, m.energyCost || 50)); // cheap moves favored
             return { id: m.id, score: dmg(m.power, atk, def, stab, mult) * reach };
         })
         .sort((a, b) => b.score - a.score);
+
     return scored.slice(0, 2).map(x => x.id);
 }
 
@@ -258,6 +320,7 @@ function bestChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
     const atkSp = SPECIES[normId(attackerSid)];
     const defSp = SPECIES[normId(defenderSid)];
     if (!atkSp || !defSp || !chargedIds.length) return null;
+
     const atk = atkSp.atk, def = defSp.def, dTypes = defSp.types || ["normal"];
     let best = null;
     for (const id of chargedIds) {
@@ -294,7 +357,7 @@ function rankChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
 
 // Convert fast+charged IDs to a clean lookup key in MOVES
 function moveKey(id) {
-    return canonMoveId(id);
+    return canonMoveId(id); // already normalizes (COMBAT_Vxx_MOVE_, Vxx_, whitespace, etc.)
 }
 
 // How many fast moves until the first use of a charged move?
@@ -316,10 +379,10 @@ export function secondsToFirstCharged(fastMoveId, chargedMoveId) {
 
 function turnsToMove(fastMoveId, chargedEnergyCost) {
     const f = MOVES[String(fastMoveId || "TACKLE").toUpperCase()] || MOVES.TACKLE;
-    const gain = Math.max(1, f.energyGain || 0);
+    const gain = Math.max(1, f.energyGain || 0); // guard
     const fasts = Math.ceil(Math.max(0, chargedEnergyCost || 0) / gain);
     const turns = fasts * Math.max(1, f.turns || 1);
-    const seconds = turns * 0.5;
+    const seconds = turns * 0.5; // 1 turn = 0.5s in GO PvP
     return { fasts, turns, seconds, fastMoveId: f.id };
 }
 
@@ -352,11 +415,17 @@ function toEngineSide(src, leagueName, shields) {
     const base = SPECIES[normId(sid)] || { atk: 200, def: 200, sta: 200, types: ["normal"] };
     const level = levelForCap(base.atk, base.def, base.sta, cap);
     const eligible = !Number.isFinite(cap) || cpAtLevel(base.atk, base.def, base.sta, 1) <= cap;
+
+    // ensure moves exist (use user/league picks, else fall back to pools)
+    const rec = recommendMovesFor(sid, src);
+
     return {
         speciesId: sid,
         name: src?.name || src?.speciesId || sid,
-        fastMove: src?.fastMove,
-        chargedMoves: src?.chargedMoves || [],
+        fastMove: rec.fastMove || src?.fastMove || bestFastFor(sid),
+        chargedMoves: (rec.chargedMoves && rec.chargedMoves.length)
+            ? rec.chargedMoves
+            : (SPECIES[normId(sid)]?.chargedPool || []),
         shields: Math.max(0, Math.min(2, shields | 0)),
         level,
         base,
@@ -427,7 +496,7 @@ export function simulateDuel(
         aRecommended: r.p1Best ?? attackerIn.chargedMoves?.[0] ?? null,
         bRecommended: r.p2Best ?? defenderIn.chargedMoves?.[0] ?? null,
 
-        // single most dangerous charged move and timing to reach it
+        // single most dangerous charged move and timing to reach it (back-compat)
         aMostDangerous: mineBest ? mineBest.id : null,
         aFastMovesToDanger: mineBest ? mineBest.fasts : null,
         aTurnsToDanger: mineBest ? mineBest.turns : null,

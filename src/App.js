@@ -190,7 +190,17 @@ export default function App() {
             .then((mod) => {
                 const list = normalizeList(mod.default);
                 const clean = dedupeBySpecies(list);
-                const filtered = clean.filter((x) => eligibleForLeague(x.speciesId, league));
+
+                // Hide Mega/Primal forms from every league
+                const noMegas = clean.filter(
+                    (x) => !/mega|primal/i.test(String(x.speciesId))
+                );
+
+                // Keep only species that can exist under the selected league cap (respects level floors)
+                const filtered = noMegas.filter((x) =>
+                    eligibleForLeague(x.speciesId, league)
+                );
+
                 setPoolRaw(filtered);
                 setPoolOpts(toOptions(filtered).map((o) => o.label));
                 setPoolIndex(indexById(filtered));
@@ -206,6 +216,7 @@ export default function App() {
             .map((s) => {
                 const base = { ...map[s.id], name: s.label };
                 const rec = recommendMovesFor(s.id, map[s.id]);
+                // include speciesId so downstream helpers can access it
                 return { ...base, speciesId: s.id, ...rec };
             });
     }, [me, poolIndex]);
@@ -225,7 +236,7 @@ export default function App() {
 
         const map = poolIndex;
 
-        // Enemies
+        // Enemies (use league-file moves if present)
         const enemiesAlive = op
             .map((s) => (s.id && !s.dead ? { ...map[s.id], name: s.label } : null))
             .filter(Boolean);
@@ -245,6 +256,7 @@ export default function App() {
                 league
             );
 
+            // find the fight row that matches the best pick
             const bestFight = fights.find((f) => f.you === best.you) || fights[0];
 
             // Arrays added by simulateDuel: aDangerList and bDangerList
@@ -252,19 +264,29 @@ export default function App() {
             const myDangers = Array.isArray(bestFight?.aDangerList) ? bestFight.aDangerList : [];
 
             // Backward compatible fallback if arrays are missing
-            const enemyFallback = bestFight?.bMostDangerous != null ? [{
-                id: bestFight.bMostDangerous,
-                fasts: bestFight.bFastMovesToDanger,
-                turns: bestFight.bTurnsToDanger,
-                seconds: Number(bestFight.bSecondsToDanger || 0),
-            }] : [];
+            const enemyFallback =
+                bestFight?.bMostDangerous != null
+                    ? [
+                        {
+                            id: bestFight.bMostDangerous,
+                            fasts: bestFight.bFastMovesToDanger,
+                            turns: bestFight.bTurnsToDanger,
+                            seconds: Number(bestFight.bSecondsToDanger || 0),
+                        },
+                    ]
+                    : [];
 
-            const myFallback = bestFight?.aMostDangerous != null ? [{
-                id: bestFight.aMostDangerous,
-                fasts: bestFight.aFastMovesToDanger,
-                turns: bestFight.aTurnsToDanger,
-                seconds: Number(bestFight.aSecondsToDanger || 0),
-            }] : [];
+            const myFallback =
+                bestFight?.aMostDangerous != null
+                    ? [
+                        {
+                            id: bestFight.aMostDangerous,
+                            fasts: bestFight.aFastMovesToDanger,
+                            turns: bestFight.aTurnsToDanger,
+                            seconds: Number(bestFight.aSecondsToDanger || 0),
+                        },
+                    ]
+                    : [];
 
             return {
                 enemy: enemy.name,
@@ -284,6 +306,7 @@ export default function App() {
         setOp([{ ...empty }, { ...empty }, { ...empty }]);
         setResults(null);
         setOpShields(2);
+        // reset both shields for simplicity
         setMyShields(2);
     }
     function resetMyTeam() {
