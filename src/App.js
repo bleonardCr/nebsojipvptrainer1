@@ -2,6 +2,7 @@
 import QuickMatrix from "./components/QuickMatrix";
 import React, { useEffect, useMemo, useState } from "react";
 import PokemonSelect from "./components/PokemonSelect";
+import ChipsBar from "./components/ChipsBar";
 import { dedupeBySpecies, toOptions, humanize, indexById } from "./lib/pokeList";
 import { LEAGUE_NAMES, importLeague } from "./Data/leagueFiles";
 import gm from "./Data/gamemaster.json";
@@ -11,6 +12,7 @@ import {
     recommendMovesFor,
     eligibleForLeague
 } from "./battleCalc";
+import { addRecent } from "./lib/recent";
 
 /* ---------------- Small UI bits ---------------- */
 function ShieldPicker({ label, value, onChange, onReset }) {
@@ -118,11 +120,7 @@ function KillToggle({ dead, onToggle }) {
 export default function App() {
     // build move/species book once from gamemaster
     useEffect(() => {
-        try {
-            buildMoveBook(gm);
-        } catch (e) {
-            console.error(e);
-        }
+        try { buildMoveBook(gm); } catch (e) { console.error(e); }
     }, []);
 
     const [league, setLeague] = useState(LEAGUE_NAMES[0]);
@@ -145,16 +143,16 @@ export default function App() {
     // results
     const [results, setResults] = useState(null);
 
+    // trigger to refresh chip bars when recents/pins change
+    const [chipsTick, setChipsTick] = useState(0);
+
     /* ----- helpers ----- */
     function normalizeList(modDefault) {
         return Array.isArray(modDefault)
             ? modDefault
-            : Array.isArray(modDefault?.pokemon)
-                ? modDefault.pokemon
-                : Array.isArray(modDefault?.data)
-                    ? modDefault.data
-                    : Array.isArray(modDefault?.list)
-                        ? modDefault.list
+            : Array.isArray(modDefault?.pokemon) ? modDefault.pokemon
+                : Array.isArray(modDefault?.data) ? modDefault.data
+                    : Array.isArray(modDefault?.list) ? modDefault.list
                         : [];
     }
 
@@ -167,6 +165,12 @@ export default function App() {
             ? { id: picked.speciesId, label: humanize(picked.speciesId), dead: false }
             : { id: "", label: typedLabel, dead: false };
         setFn(next);
+
+        // if a valid pick, save as recent and refresh chips
+        if (picked) {
+            addRecent(league, humanize(picked.speciesId));
+            setChipsTick((n) => n + 1);
+        }
     }
 
     function toggleDead(which, index) {
@@ -191,19 +195,18 @@ export default function App() {
                 const list = normalizeList(mod.default);
                 const clean = dedupeBySpecies(list);
 
-                // Hide Mega/Primal forms from every league
-                const noMegas = clean.filter(
-                    (x) => !/mega|primal/i.test(String(x.speciesId))
-                );
+                // Hide Mega/Primal forms
+                const noMegas = clean.filter((x) => !/mega|primal/i.test(String(x.speciesId)));
 
-                // Keep only species that can exist under the selected league cap (respects level floors)
-                const filtered = noMegas.filter((x) =>
-                    eligibleForLeague(x.speciesId, league)
-                );
+                // Keep only species eligible at this league (level floors applied inside)
+                const filtered = noMegas.filter((x) => eligibleForLeague(x.speciesId, league));
 
                 setPoolRaw(filtered);
                 setPoolOpts(toOptions(filtered).map((o) => o.label));
                 setPoolIndex(indexById(filtered));
+
+                // refresh chips when league changes
+                setChipsTick((n) => n + 1);
             })
             .catch((err) => setLoadError(String(err)));
     }, [league]);
@@ -216,7 +219,6 @@ export default function App() {
             .map((s) => {
                 const base = { ...map[s.id], name: s.label };
                 const rec = recommendMovesFor(s.id, map[s.id]);
-                // include speciesId so downstream helpers can access it
                 return { ...base, speciesId: s.id, ...rec };
             });
     }, [me, poolIndex]);
@@ -229,64 +231,43 @@ export default function App() {
     }, [me, op]);
 
     useEffect(() => {
-        if (!ready) {
-            setResults(null);
-            return;
-        }
+        if (!ready) { setResults(null); return; }
 
         const map = poolIndex;
 
-        // Enemies (use league-file moves if present)
         const enemiesAlive = op
             .map((s) => (s.id && !s.dead ? { ...map[s.id], name: s.label } : null))
             .filter(Boolean);
 
-        if (!myTeamAlive.length || !enemiesAlive.length) {
-            setResults(null);
-            return;
-        }
+        if (!myTeamAlive.length || !enemiesAlive.length) { setResults(null); return; }
 
         const perEnemy = enemiesAlive.map((enemy) => {
             const { best, fights } = bestOfThree(
-                myTeamAlive,
-                enemy,
-                myShields ?? 2,
-                opShields ?? 2,
-                undefined,
-                league
+                myTeamAlive, enemy,
+                myShields ?? 2, opShields ?? 2,
+                undefined, league
             );
 
-            // find the fight row that matches the best pick
             const bestFight = fights.find((f) => f.you === best.you) || fights[0];
 
-            // Arrays added by simulateDuel: aDangerList and bDangerList
             const enemyDangers = Array.isArray(bestFight?.bDangerList) ? bestFight.bDangerList : [];
             const myDangers = Array.isArray(bestFight?.aDangerList) ? bestFight.aDangerList : [];
 
-            // Backward compatible fallback if arrays are missing
             const enemyFallback =
-                bestFight?.bMostDangerous != null
-                    ? [
-                        {
-                            id: bestFight.bMostDangerous,
-                            fasts: bestFight.bFastMovesToDanger,
-                            turns: bestFight.bTurnsToDanger,
-                            seconds: Number(bestFight.bSecondsToDanger || 0),
-                        },
-                    ]
-                    : [];
+                bestFight?.bMostDangerous != null ? [{
+                    id: bestFight.bMostDangerous,
+                    fasts: bestFight.bFastMovesToDanger,
+                    turns: bestFight.bTurnsToDanger,
+                    seconds: Number(bestFight.bSecondsToDanger || 0),
+                }] : [];
 
             const myFallback =
-                bestFight?.aMostDangerous != null
-                    ? [
-                        {
-                            id: bestFight.aMostDangerous,
-                            fasts: bestFight.aFastMovesToDanger,
-                            turns: bestFight.aTurnsToDanger,
-                            seconds: Number(bestFight.aSecondsToDanger || 0),
-                        },
-                    ]
-                    : [];
+                bestFight?.aMostDangerous != null ? [{
+                    id: bestFight.aMostDangerous,
+                    fasts: bestFight.aFastMovesToDanger,
+                    turns: bestFight.aTurnsToDanger,
+                    seconds: Number(bestFight.aSecondsToDanger || 0),
+                }] : [];
 
             return {
                 enemy: enemy.name,
@@ -306,7 +287,6 @@ export default function App() {
         setOp([{ ...empty }, { ...empty }, { ...empty }]);
         setResults(null);
         setOpShields(2);
-        // reset both shields for simplicity
         setMyShields(2);
     }
     function resetMyTeam() {
@@ -316,38 +296,12 @@ export default function App() {
     }
 
     /* ----- styles ----- */
-    const h1 = {
-        textAlign: "center",
-        fontSize: 34,
-        fontWeight: 800,
-        margin: "28px 0",
-    };
-    const box = {
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 18,
-        background: "#fff",
-    };
-    const colWrap = {
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 24,
-        marginTop: 12,
-    };
+    const h1 = { textAlign: "center", fontSize: 34, fontWeight: 800, margin: "28px 0" };
+    const box = { border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, marginBottom: 18, background: "#fff" };
+    const colWrap = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 12 };
     const small = { fontSize: 13, color: "#6b7280" };
-    const resultsGrid = {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-        gap: 12,
-        alignItems: "start",
-    };
-    const pill = {
-        fontSize: 12,
-        background: "#f3f4f6",
-        padding: "2px 8px",
-        borderRadius: 999,
-    };
+    const resultsGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12, alignItems: "start" };
+    const pill = { fontSize: 12, background: "#f3f4f6", padding: "2px 8px", borderRadius: 999 };
 
     const DangerList = ({ list }) => {
         if (!list || list.length === 0) return <>—</>;
@@ -366,25 +320,18 @@ export default function App() {
     return (
         <div
             style={{
-                maxWidth: 1200,
-                margin: "0 auto",
-                padding: "20px 16px",
-                fontFamily:
-                    "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+                maxWidth: 1200, margin: "0 auto", padding: "20px 16px",
+                fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
             }}
         >
             <h1 style={h1}>Nebsoji PvP Trainer</h1>
 
             {/* League picker */}
             <div style={box}>
-                <label style={{ fontWeight: 600, marginRight: 10 }}>
-                    Select League:
-                </label>
+                <label style={{ fontWeight: 600, marginRight: 10 }}>Select League:</label>
                 <select value={league} onChange={(e) => setLeague(e.target.value)}>
                     {LEAGUE_NAMES.map((l) => (
-                        <option key={l} value={l}>
-                            {l}
-                        </option>
+                        <option key={l} value={l}>{l}</option>
                     ))}
                 </select>
                 {loadError && (
@@ -403,8 +350,14 @@ export default function App() {
                     </div>
 
                     {me.map((p, i) => (
-                        <div key={`me-${i}`} style={{ display: "flex", alignItems: "center" }}>
+                        <div key={`me-${i}`} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
                             <div style={{ flex: 1 }}>
+                                <ChipsBar
+                                    league={league}
+                                    tick={chipsTick}
+                                    title="Recent / Pinned"
+                                    onPick={(name) => selectFromLabel(me, setMe, i, name)}
+                                />
                                 <PokemonSelect
                                     id={`me-${i}`}
                                     label={`Pok\u00E9mon ${i + 1}`}
@@ -427,14 +380,7 @@ export default function App() {
                         />
                         <button
                             onClick={resetMyTeam}
-                            style={{
-                                border: "1px solid #111",
-                                background: "#fff",
-                                borderRadius: 10,
-                                padding: "6px 10px",
-                                cursor: "pointer",
-                                height: 36,
-                            }}
+                            style={{ border: "1px solid #111", background: "#fff", borderRadius: 10, padding: "6px 10px", cursor: "pointer", height: 36 }}
                             title="Clear your picks and results (also resets your shields)"
                         >
                             Reset My Team
@@ -442,9 +388,7 @@ export default function App() {
                     </div>
 
                     <div style={{ ...small, marginTop: 8 }}>
-                        Use <span style={pill}>☠️ Dead</span> or{" "}
-                        <span style={pill}>✖️ Exclude</span> to keep a pick visible but out of
-                        the calc.
+                        Use <span style={pill}>☠️ Dead</span> or <span style={pill}>✖️ Exclude</span> to keep a pick visible but out of the calc.
                     </div>
                 </div>
 
@@ -456,8 +400,14 @@ export default function App() {
                     </div>
 
                     {op.map((p, i) => (
-                        <div key={`op-${i}`} style={{ display: "flex", alignItems: "center" }}>
+                        <div key={`op-${i}`} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
                             <div style={{ flex: 1 }}>
+                                <ChipsBar
+                                    league={league}
+                                    tick={chipsTick}
+                                    title="Recent / Pinned"
+                                    onPick={(name) => selectFromLabel(op, setOp, i, name)}
+                                />
                                 <PokemonSelect
                                     id={`op-${i}`}
                                     label={`Opponent ${i + 1}`}
@@ -480,14 +430,7 @@ export default function App() {
                         />
                         <button
                             onClick={resetEnemy}
-                            style={{
-                                border: "1px solid #111",
-                                background: "#fff",
-                                borderRadius: 10,
-                                padding: "6px 10px",
-                                cursor: "pointer",
-                                height: 36,
-                            }}
+                            style={{ border: "1px solid #111", background: "#fff", borderRadius: 10, padding: "6px 10px", cursor: "pointer", height: 36 }}
                             title="Clear enemies and results (also resets both shields)"
                         >
                             Reset Enemy
@@ -495,8 +438,7 @@ export default function App() {
                     </div>
 
                     <div style={small}>
-                        Mark a pick with <span style={pill}>☠️ Dead</span> to exclude it from
-                        the calc.
+                        Mark a pick with <span style={pill}>☠️ Dead</span> to exclude it from the calc.
                     </div>
                 </div>
             </div>
@@ -507,35 +449,16 @@ export default function App() {
                     <h3 style={{ marginTop: 0 }}>Live Results</h3>
                     <div style={resultsGrid}>
                         {results.perEnemy.map((E, i) => (
-                            <div
-                                key={i}
-                                style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}
-                            >
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "baseline",
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <div style={{ fontWeight: 800 }}>
-                                        vs <b>{E.enemy}</b>
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: 12,
-                                            background: "#f3f4f6",
-                                            padding: "2px 8px",
-                                            borderRadius: 999,
-                                        }}
-                                    >
+                            <div key={i} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}>
+                                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+                                    <div style={{ fontWeight: 800 }}>vs <b>{E.enemy}</b></div>
+                                    <div style={{ fontSize: 12, background: "#f3f4f6", padding: "2px 8px", borderRadius: 999 }}>
                                         Danger moves: <DangerList list={E.enemyDangers} />
                                     </div>
                                 </div>
 
                                 <div style={{ fontSize: 13, color: "#374151", marginTop: 6, marginBottom: 8 }}>
-                                    Best of your team: <b>{E.bestPick}</b> | Your danger moves:{" "}
-                                    <DangerList list={E.myDangers} />
+                                    Best of your team: <b>{E.bestPick}</b> | Your danger moves: <DangerList list={E.myDangers} />
                                 </div>
 
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
@@ -552,17 +475,8 @@ export default function App() {
                                             background: draw ? "#6b7280" : win ? "#16a34a" : "#dc2626",
                                         };
                                         return (
-                                            <div
-                                                key={j}
-                                                style={{ border: "1px solid #eef2f7", borderRadius: 10, padding: 10 }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-between",
-                                                    }}
-                                                >
+                                            <div key={j} style={{ border: "1px solid #eef2f7", borderRadius: 10, padding: 10 }}>
+                                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                                     <div style={{ fontWeight: 700 }}>{o.you}</div>
                                                     <span style={badge}>{draw ? "Draw" : win ? "Win" : "Loss"}</span>
                                                 </div>
@@ -578,8 +492,7 @@ export default function App() {
                         ))}
                     </div>
                     <div style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
-                        Competitive-lite sim (turns, energy, type, STAB, shields). IVs and buffs can
-                        be added later - UI stays the same.
+                        Competitive-lite sim (turns, energy, type, STAB, shields). IVs and buffs can be added later - UI stays the same.
                     </div>
                 </div>
             )}
