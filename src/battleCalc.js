@@ -4,7 +4,7 @@
 // - bestOfThree (UI helper)
 // - recommendMovesFor(speciesId, leagueEntry?) -> {fastMove, chargedMoves}
 // - dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds[]) -> top 2 charged move IDs
-// - NEW: dangerMoveTimingFor(attacker, defender) -> {moveId, fasts, turns, seconds}
+// - dangerMoveTimingFor(attacker, defender) -> {moveId, fasts, turns, seconds}
 
 import { simulateBattle } from "./engine/battleEngine";
 
@@ -22,21 +22,34 @@ const canonMoveId = (s) =>
         .replace(/_+/g, "_")
         .replace(/^_|_$/g, "")
         .toUpperCase();
+
 const normId = (s) =>
     String(s || "")
         .toLowerCase()
         .replace(/[^\w]+/g, "_")
         .replace(/^_+|_+$/g, "");
+
+// Robust league cap normalization
 function capLeague(league) {
-    const map = { "Great League": 1500, "Ultra League": 2500, "Master League": Infinity };
-    return typeof league === "string"
-        ? map[league] ?? Infinity
-        : Number.isFinite(league)
-            ? Number(league)
-            : Infinity;
+    if (Number.isFinite(league)) return Number(league); // numeric cap passed
+
+    const key = String(league || "")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/league$/, ""); // strip trailing "league"
+
+    switch (key) {
+        case "great": return 1500;
+        case "ultra": return 2500;
+        case "master": return Infinity;
+        default: {
+            const m = key.match(/^(\d{3,4})$/); // allow "1500" or "2500"
+            return m ? Number(m[1]) : Infinity;
+        }
+    }
 }
 
-// CPM helpers
+// ---------------- CPM helpers ----------------
 const CPM = [];
 (function fillCPM() {
     const table = [
@@ -56,8 +69,14 @@ const CPM = [];
     CPM.fill(0);
     for (let i = 0; i < table.length; i++) CPM[i + 1] = table[i];
 })();
+
 function cp(a, d, s, c) {
     return Math.floor((a * Math.sqrt(d) * Math.sqrt(s) * c * c) / 10);
+}
+function cpAtLevel(baseAtk, baseDef, baseSta, level) {
+    const c = CPM[level] || 0;
+    if (!c) return 10;
+    return cp(baseAtk * c, baseDef * c, baseSta * c, 1);
 }
 function levelForCap(baseAtk, baseDef, baseSta, cap) {
     if (!isFinite(cap)) return 50;
@@ -69,6 +88,23 @@ function levelForCap(baseAtk, baseDef, baseSta, cap) {
     }
     return best;
 }
+
+// Public - can this species exist at or under the league cap at some legal level?
+export function eligibleForLeague(speciesId, leagueName) {
+    const cap = capLeague(leagueName);
+    if (!Number.isFinite(cap)) return true; // Master League is uncapped
+
+    const sid = normId(speciesId);
+    const sp = SPECIES[sid];
+    if (!sp) return false;
+
+    // CP grows monotonically with level; return true if ANY level 1..50 is <= cap
+    for (let L = 1; L <= 50; L++) {
+        if (cpAtLevel(sp.atk, sp.def, sp.sta, L) <= cap) return true;
+    }
+    return false;
+}
+
 
 // ---------------- build species and moves from gamemaster ----------------
 function buildSpeciesBook(gm) {
@@ -138,15 +174,18 @@ export function buildMoveBook(gm) {
             out[id] = { id, kind, type, power, energyGain, energyCost, turns };
         }
     }
-    out.TACKLE ||= {
-        id: "TACKLE",
-        kind: "fast",
-        type: "normal",
-        power: 3,
-        energyGain: 8,
-        energyCost: 0,
-        turns: 1,
-    };
+    // Fallback TACKLE without logical assignment to satisfy older Babel
+    if (!out.TACKLE) {
+        out.TACKLE = {
+            id: "TACKLE",
+            kind: "fast",
+            type: "normal",
+            power: 3,
+            energyGain: 8,
+            energyCost: 0,
+            turns: 1,
+        };
+    }
     MOVES = out;
     return out;
 }
@@ -223,7 +262,7 @@ export function dangerMovesFor(enemySpeciesId, mySpeciesId, enemyChargedIds = []
     return scored.slice(0, 2).map(x => x.id);
 }
 
-// ---- NEW helpers: pick most dangerous charged move and timing to reach it ----
+// ---- helpers: pick most dangerous charged move and timing to reach it ----
 function bestChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
     const atkSp = SPECIES[normId(attackerSid)];
     const defSp = SPECIES[normId(defenderSid)];
@@ -241,6 +280,28 @@ function bestChargedAgainst(attackerSid, defenderSid, chargedIds = []) {
         if (!best || score > best.score) best = { id: m.id, score, energyCost: m.energyCost };
     }
     return best;
+}
+
+// Convert fast+charged IDs to a clean lookup key in MOVES
+function moveKey(id) {
+    return canonMoveId(id); // already normalizes (COMBAT_Vxx_MOVE_, Vxx_, whitespace, etc.)
+}
+
+// How many fast moves until the first use of a charged move?
+export function fastsToFirstCharged(fastMoveId, chargedMoveId) {
+    const f = MOVES[moveKey(fastMoveId)];
+    const c = MOVES[moveKey(chargedMoveId)];
+    if (!f || !c || !f.energyGain || !c.energyCost) return null;
+    return Math.ceil(Math.max(0, c.energyCost) / Math.max(1, f.energyGain));
+}
+
+// Seconds until the first use of a charged move (0.5s per turn)
+export function secondsToFirstCharged(fastMoveId, chargedMoveId) {
+    const f = MOVES[moveKey(fastMoveId)];
+    const nFast = fastsToFirstCharged(fastMoveId, chargedMoveId);
+    if (!f || nFast == null) return null;
+    const turns = nFast * Math.max(1, f.turns || 1);
+    return turns * 0.5;
 }
 
 function turnsToMove(fastMoveId, chargedEnergyCost) {
@@ -266,6 +327,7 @@ function toEngineSide(src, leagueName, shields) {
     const sid = src?.speciesId || src?.name || "";
     const base = SPECIES[normId(sid)] || { atk: 200, def: 200, sta: 200, types: ["normal"] };
     const level = levelForCap(base.atk, base.def, base.sta, cap);
+    const eligible = !Number.isFinite(cap) || cpAtLevel(base.atk, base.def, base.sta, 1) <= cap;
     return {
         speciesId: sid,
         name: src?.name || src?.speciesId || sid,
@@ -273,14 +335,48 @@ function toEngineSide(src, leagueName, shields) {
         chargedMoves: src?.chargedMoves || [],
         shields: Math.max(0, Math.min(2, shields | 0)),
         level,
-        base
+        base,
+        eligible
     };
 }
 
-export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2, _bookIgnored, leagueName = "Master League") {
+export function simulateDuel(
+    attackerIn,
+    defenderIn,
+    shieldsA = 2,
+    shieldsB = 2,
+    _bookIgnored,
+    leagueName = "Master League"
+) {
     const p1 = toEngineSide(attackerIn, leagueName, shieldsA);
     const p2 = toEngineSide(defenderIn, leagueName, shieldsB);
+    const cap = capLeague(leagueName);
 
+    // If either side is illegal under the selected cap, return a neutral draw
+    if (Number.isFinite(cap)) {
+        const p1CP = cpAtLevel(p1.base.atk, p1.base.def, p1.base.sta, p1.level);
+        const p2CP = cpAtLevel(p2.base.atk, p2.base.def, p2.base.sta, p2.level);
+        if (!p1.eligible || !p2.eligible || p1CP > cap || p2CP > cap) {
+            return {
+                winner: "Draw",
+                aHP: 0,
+                bHP: 0,
+                aRecommended: null,
+                bRecommended: null,
+                aMostDangerous: null,
+                aFastMovesToDanger: null,
+                aTurnsToDanger: null,
+                aSecondsToDanger: null,
+                bMostDangerous: null,
+                bFastMovesToDanger: null,
+                bTurnsToDanger: null,
+                bSecondsToDanger: null,
+                summary: []
+            };
+        }
+    }
+
+    // Run the battle
     const r = simulateBattle(p1, p2, MOVES) || {};
     const p1s = r.p1 || { hp: 0 };
     const p2s = r.p2 || { hp: 0 };
@@ -304,7 +400,7 @@ export function simulateDuel(attackerIn, defenderIn, shieldsA = 2, shieldsB = 2,
         aRecommended: r.p1Best ?? attackerIn.chargedMoves?.[0] ?? null,
         bRecommended: r.p2Best ?? defenderIn.chargedMoves?.[0] ?? null,
 
-        // NEW - single most dangerous charged move and timing to reach it
+        // single most dangerous charged move and timing to reach it
         aMostDangerous: mineBest ? mineBest.id : null,
         aFastMovesToDanger: mineTime ? mineTime.fasts : null,
         aTurnsToDanger: mineTime ? mineTime.turns : null,
